@@ -212,7 +212,7 @@ class CoffeeBot(object):
         if not(self.channels.talk.get_busy()):
             r = 86400
             propability = random.randint(0, r)
-            if propability == (r / 2):
+            if (r / 2) - 10 < propability < (r / 2) + 10:
                 phrases = [
                     'I am alive!',
                     'Is somebody out there?',
