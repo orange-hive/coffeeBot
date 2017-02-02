@@ -3,7 +3,15 @@
     "debug": true,
     "debugEmail": "{your email}",
     "musicFolder": "/music",
-    "timezone": "Europe/Berlin"
+    "timezone": "Europe/Berlin",
+    "smtp": {
+      "sender": [ "{name}", "{email}" ],
+      "host": "{host}",
+      "port": {port},
+      "helo": "{helo}",
+      "login": "{login}",
+      "password": "{password}"
+    }
   },
   "dishes": {
     "email": [ "{name}", "{email}" ]

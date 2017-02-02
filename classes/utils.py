@@ -59,18 +59,25 @@ class Utils(object):
     @staticmethod
     def sendmail(to_email, to_name, subject, message):
         def sender():
-            server = smtplib.SMTP('post.com2-gmbh.de', 25, 'localhost')
-            server.login("coffeebot.com2mailer.de", "c0ff33bot")
+            server = smtplib.SMTP(
+                tingbot.app.settings['coffeeBot']['smtp']['host'],
+                tingbot.app.settings['coffeeBot']['smtp']['port'],
+                tingbot.app.settings['coffeeBot']['smtp']['helo']
+            )
+            server.login(
+                tingbot.app.settings['coffeeBot']['smtp']['login'],
+                tingbot.app.settings['coffeeBot']['smtp']['password']
+            )
 
             msg = MIMEText(message.encode('utf-8'), 'plain', 'utf-8')
             msg['Subject'] = Header(subject, 'utf-8')
-            msg['From'] = 'CoffeeBot <coffeebot@com2mailer.de>'
+            msg['From'] = tingbot.app.settings['coffeeBot']['smtp']['sender'][0] + ' <' + tingbot.app.settings['coffeeBot']['smtp']['sender'][1] + '>'
             msg['To'] = "\"%s\" <%s>" % (Header(to_name, 'utf-8'), to_email)
 
             if tingbot.app.settings['coffeeBot']['debug']:
-                server.sendmail("coffeebot@com2mailer.de", tingbot.app.settings['coffeeBot']['debugEmail'], msg.as_string())
+                server.sendmail(tingbot.app.settings['coffeeBot']['smtp']['sender'][1], tingbot.app.settings['coffeeBot']['debugEmail'], msg.as_string())
             else:
-                server.sendmail("coffeebot@com2mailer.de", to_email, msg.as_string())
+                server.sendmail(tingbot.app.settings['coffeeBot']['smtp']['sender'][1], to_email, msg.as_string())
             server.quit()
 
         senderThread = threading.Thread(target=sender)
