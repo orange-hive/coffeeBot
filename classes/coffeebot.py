@@ -11,6 +11,7 @@ from gtts import gTTS
 from hashlib import sha1
 from utils import Utils
 import tingbot
+import random
 
 
 class CoffeeBot(object):
@@ -206,7 +207,24 @@ class CoffeeBot(object):
             self.screen.text(self.appsInfos[self.state.activeApp].fullname, font_size=16, xy=(160, 3), align='top', color=self.colors.font, font=Utils.get_font_resource('akkuratstd-light.ttf'))
 
         self.state.needs_render = False
-        
+
+    def i_am_alive(self):
+        if not(self.channels.talk.get_busy()):
+            r = 86400
+            propability = random.randint(0, r)
+            if propability == (r / 2):
+                phrases = [
+                    'I am alive!',
+                    'Is somebody out there?',
+                    'Hoo Hoo?',
+                    'I feel so lonely',
+                    'dumb dee dumb',
+                    'doo dee doo',
+                    'Is this Orange Hive?',
+                    'I never saw my creator!'
+                ]
+                self.say(random.choice(phrases))
+
     def update(self, execution_type='fg'):
         if execution_type == 'fg':
             if self.state.needs_render is True:
@@ -228,3 +246,5 @@ class CoffeeBot(object):
         else:
             for name, app in self.apps.iteritems():
                     app.update('bg')
+
+        self.i_am_alive()
