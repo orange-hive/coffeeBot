@@ -2,7 +2,8 @@
   "coffeeBot": {
     "debug": true,
     "debugEmail": "{your email}",
-    "musicFolder": "/music"
+    "musicFolder": "/music",
+    "timezone": "Europe/Berlin"
   },
   "dishes": {
     "email": [ "{name}", "{email}" ]

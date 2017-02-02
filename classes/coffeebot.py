@@ -79,7 +79,7 @@ class CoffeeBot(object):
         )
         
         self.persistentState = DotMap(
-            version='1.5.0'
+            version='1.5.1'
         )
         self.read_persistent_state()
         

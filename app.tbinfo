@@ -2,5 +2,6 @@
     "name": "CoffeeBot",
     "author": {
         "name": "Orangehive GmbH"
-    }
+    },
+    "version": "1.5.1"
 }

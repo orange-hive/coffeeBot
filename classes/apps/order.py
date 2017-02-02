@@ -15,8 +15,8 @@ class Order(AppBase):
             self.supplies[product].font = tuple(self.supplies[product].font)
             self.supplies[product].background = tuple(self.supplies[product].background),
 
-        self.colors.background = (65, 190, 198)
-        self.colors.font = (244, 245, 245)
+        self.colors.button.active.background = (65, 190, 198)
+        self.colors.button.active.font = (244, 245, 245)
 
         count = 0
         col = 0
@@ -31,8 +31,8 @@ class Order(AppBase):
                 self.confirm,
                 xy=(10 + (col * 95 + col * 8), (5 + (row * 95 + row * 8))),
                 size=(width, 95),
-                color=self.colors.font,
-                background=self.colors.background,
+                color=self.colors.button.active.font,
+                background=self.colors.button.active.background,
                 align='topleft',
                 text=v.name,
                 font=Utils.get_font_resource('akkuratstd-light.ttf'),
