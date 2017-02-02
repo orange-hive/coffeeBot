@@ -45,8 +45,8 @@ class NotificationDialog(DialogBase):
         )
 
         def checkbox_action(name):
-            self.get_widget('container').state.needsRender = True
-            self.state.needsRender = True
+            self.get_widget('container').state.needs_render = True
+            self.state.needs_render = True
             checkbox = self.get_widget('container').get_widget(name)
             if checkbox.checked is True:
                 self.state.selectedReceiver[checkbox.value] = self.settings.availableReceiver[checkbox.value]

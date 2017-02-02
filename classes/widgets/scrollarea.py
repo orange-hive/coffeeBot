@@ -46,13 +46,13 @@ class ScrollArea(Container):
                     self.window.y -= self.containerScreen.height / 1
                     if self.window.y < 0:
                         self.window.y = 0
-                    self.parent.state.needsRender = True
+                    self.parent.state.needs_render = True
         elif self.scrollbarButtonDown.collidepoint(rel_xy[0], rel_xy[1]):
             if action == 'down':
                 if self.window is not None:
                     self.window.y += self.containerScreen.height / 1
                     if self.window.y > self.screen.height - self.window.height:
                         self.window.y = self.screen.height - self.window.height
-                    self.parent.state.needsRender = True
+                    self.parent.state.needs_render = True
         else:
             super(ScrollArea, self).on_touch(xy, action)

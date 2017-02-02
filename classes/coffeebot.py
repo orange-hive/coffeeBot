@@ -75,11 +75,11 @@ class CoffeeBot(object):
         self.state = DotMap(
             activeApp=self.settings.defaultApp,
             previousApp=None,
-            needsRender=True
+            needs_render=True
         )
         
         self.persistentState = DotMap(
-            version='1.5.1'
+            version='1.5.2'
         )
         self.read_persistent_state()
         
@@ -99,60 +99,61 @@ class CoffeeBot(object):
         self.say('Hi, I am the coffee bot! What shall I do for you?')
 
     def say(self, phrase):
-        audioFile = Utils.get_audio_text_resource(sha1(phrase).hexdigest() + '.wav')
+        if phrase:
+            audio_file = Utils.get_audio_text_resource(sha1(phrase).hexdigest() + '.wav')
 
-        def action():
-            if not(os.path.isfile(audioFile)):
-                if platform.system() == 'Darwin':
-                    mpg123Path = '/opt/local/bin/mpg123'
-                else:
-                    mpg123Path = 'mpg123'
+            def action():
+                if not(os.path.isfile(audio_file)):
+                    if platform.system() == 'Darwin':
+                        mpg123_path = '/opt/local/bin/mpg123'
+                    else:
+                        mpg123_path = 'mpg123'
 
-                tts = gTTS(text=phrase, lang='en-US')
-                with NamedTemporaryFile(suffix='.mp3', delete=False) as f:
-                    tempfile = f.name
-                tts.save(tempfile)
-                subprocess.call([mpg123Path, '-w', audioFile, tempfile])
-                os.remove(f.name)
-                
-            self.channels.talk.play(pygame.mixer.Sound(audioFile))
+                    tts = gTTS(text=phrase, lang='en-US')
+                    with NamedTemporaryFile(suffix='.mp3', delete=False) as f:
+                        tempfile = f.name
+                    tts.save(tempfile)
+                    subprocess.call([mpg123_path, '-w', audio_file, tempfile])
+                    os.remove(f.name)
 
-        sayThread = threading.Thread(target=action)
-        sayThread.start()
+                self.channels.talk.play(pygame.mixer.Sound(audio_file))
+
+            say_thread = threading.Thread(target=action)
+            say_thread.start()
 
     def save_persistent_state(self):
-        globalState = DotMap()
+        global_state = DotMap()
         
         for name, app in self.apps.iteritems():
-            globalState[name] = app.get_persistent_state()
+            global_state[name] = app.get_persistent_state()
         
-        globalState.coffeeBot = self.persistentState
-        Utils.write_state(globalState.toDict())
+        global_state.coffeeBot = self.persistentState
+        Utils.write_state(global_state.toDict())
 
     def read_persistent_state(self):
-        globalState = Utils.read_state()
+        global_state = Utils.read_state()
 
         if (
-            globalState is None
-            or 'coffeeBot' not in globalState.keys()
-            or 'version' not in globalState['coffeeBot'].keys()
-            or globalState['coffeeBot']['version'] != self.persistentState.version
+            global_state is None
+            or 'coffeeBot' not in global_state.keys()
+            or 'version' not in global_state['coffeeBot'].keys()
+            or global_state['coffeeBot']['version'] != self.persistentState.version
             or self.persistentState.version.find('dev') != -1
         ):
             print 'reset states'
             self.save_persistent_state()
         else:            
             for name, app in self.apps.iteritems():
-                if name in globalState.keys():
-                    app.set_persistent_state(DotMap(globalState[name]))
-            if 'coffeeBot' in globalState.keys():
-                self.persistentState = DotMap(globalState['coffeeBot'])
+                if name in global_state.keys():
+                    app.set_persistent_state(DotMap(global_state[name]))
+            if 'coffeeBot' in global_state.keys():
+                self.persistentState = DotMap(global_state['coffeeBot'])
         
     def set_active_app(self, app_name):
         if self.apps[self.state.activeApp].keep_active() is False:
             self.state.previousApp = self.state.activeApp
             self.state.activeApp = app_name
-            self.apps[self.state.activeApp].state.needsRender = True
+            self.apps[self.state.activeApp].state.needs_render = True
             self.save_persistent_state()
         else:
             self.say('Sorry. You cannot leave this application at the moment.')
@@ -161,7 +162,7 @@ class CoffeeBot(object):
         return self.state.activeApp
 
     def button_press(self, position):
-        self.state.needsRender = True
+        self.state.needs_render = True
         
         if position == 'left':
             self.apps.music.toggle() 
@@ -177,7 +178,7 @@ class CoffeeBot(object):
 
     def on_touch(self, xy, action):
         if action == 'down':
-            self.state.needsRender = True
+            self.state.needs_render = True
         self.apps[self.state.activeApp].on_touch(xy, action)
 
     def keep_active(self):
@@ -204,22 +205,22 @@ class CoffeeBot(object):
         else:
             self.screen.text(self.appsInfos[self.state.activeApp].fullname, font_size=16, xy=(160, 3), align='top', color=self.colors.font, font=Utils.get_font_resource('akkuratstd-light.ttf'))
 
-        self.state.needsRender = False
+        self.state.needs_render = False
         
     def update(self, execution_type='fg'):
         if execution_type == 'fg':
-            if self.state.needsRender is True:
+            if self.state.needs_render is True:
                 self.render()
                 
             self.apps[self.state.activeApp].update('fg')
             self.screen.update()
 
             if tingbot.app.settings['coffeeBot']['debug']:
-                versionText = self.persistentState.version + ' - debug'
+                version_text = self.persistentState.version + ' - debug'
             else:
-                versionText = self.persistentState.version
+                version_text = self.persistentState.version
 
-            self.screen.text(versionText, font_size=10, xy=(317, 238), align='bottomright', color=(129, 133, 135), font=Utils.get_font_resource('akkuratstd-light.ttf'))
+            self.screen.text(version_text, font_size=10, xy=(317, 238), align='bottomright', color=(129, 133, 135), font=Utils.get_font_resource('akkuratstd-light.ttf'))
 
             for name, app in self.apps.iteritems():
                 if name != self.state.activeApp:

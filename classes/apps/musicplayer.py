@@ -14,7 +14,7 @@ class MusicPlayer(AppBase):
         
         self.init_settings(
             music=[],
-            timezone = timezone
+            timezone=timezone
         )
         
         self.init_states(
@@ -27,15 +27,20 @@ class MusicPlayer(AppBase):
 
         pygame.mixer.music.set_volume(0.3)
 
-        for filename in os.listdir(music_folder):
-            if filename != '.DS_Store':
-                self.settings.music.append(os.path.join(music_folder, filename))
+        self.read_music_folder(music_folder)
             
         self.colors.button.active.background = (255, 222, 45)
         self.colors.button.active.font = (0, 0, 0)
 
         self.create_widgets()
-            
+
+    def read_music_folder(self, folder):
+        for filename in os.listdir(folder):
+            if os.path.isdir(os.path.join(folder, filename)):
+                self.read_music_folder(os.path.join(folder, filename))
+            elif filename != '.DS_Store':
+                self.settings.music.append(os.path.join(folder, filename))
+
     def is_playing(self):
         return self.state.playingMusic
 
@@ -56,24 +61,34 @@ class MusicPlayer(AppBase):
             pygame.mixer.music.play()
 
             self.state.playingFile = os.path.basename(filename)
-            self.state.needsRender = True
-            self.parent.needsRender = True
+            self.state.needs_render = True
+            self.parent.needs_render = True
 
         self.stop(mute_talk=True)
         if mute_talk is False:
-                self.parent.say('Ok. I will play some music.')
+            phrases = [
+                'Ok. I will play some music.',
+                'Let\'s play some music',
+                'doody doody doo'
+            ]
+            self.parent.say(random.choice(phrases))
 
-        playThread = threading.Thread(target=play)
-        playThread.start()
+        play_thread = threading.Thread(target=play)
+        play_thread.start()
         self.state.playingMusic = True
         self.state.loadingFile = True
         self.state.loadingStartedAt = datetime.datetime.now(self.settings['timezone'])
-        self.state.needsRender = True
-        self.parent.needsRender = True
+        self.state.needs_render = True
+        self.parent.needs_render = True
 
     def stop(self, mute_talk=False):
         if mute_talk is False:
-                self.parent.say('Ok. I will stop the music.')
+            phrases = [
+                'Ok. I will stop the music.',
+                'I\'ll be quiet.',
+                'Ok'
+            ]
+            self.parent.say(random.choice(phrases))
 
         if pygame.mixer.music.get_busy():
             pygame.mixer.music.fadeout(500)
@@ -82,12 +97,17 @@ class MusicPlayer(AppBase):
 
         self.state.playingMusic = False
         self.state.playingFile = None
-        self.state.needsRender = True
-        self.parent.needsRender = True
+        self.state.needs_render = True
+        self.parent.needs_render = True
 
     def skip(self, mute_talk=False):
         if mute_talk is False:
-            self.parent.say('Ok. I will play another song.')
+            phrases = [
+                'Ok. I will play another song.',
+                'Skipping',
+                'Ok'
+            ]
+            self.parent.say(random.choice(phrases))
 
         self.stop(mute_talk=True)
         self.play(mute_talk=True)
@@ -137,7 +157,7 @@ class MusicPlayer(AppBase):
                 self.skip(mute_talk=True)
             else:
                 self.screen.image('loader.gif', xy=(160, 75), align='center')
-                self.state.needsRender = True
+                self.state.needs_render = True
         elif self.state.playingMusic is False and not(pygame.mixer.music.get_busy()):
             self.get_widget('toggle').text = 'Play some music!'
             self.get_widget('toggle').render()

@@ -11,7 +11,7 @@ class Container(WidgetBase):
         super(Container, self).__init__(parent, name,  xy=xy, size=size, align=align)
         
         self.state = DotMap(
-            needsRender=True
+            needs_render=True
         )
         
         self.containerScreen = self.screen
@@ -26,11 +26,11 @@ class Container(WidgetBase):
     def render(self):
         super(Container, self).render()
         
-        if self.state.needsRender is True:
+        if self.state.needs_render is True:
             self.screen.fill((0, 0, 0))
             for k, v in self.widgets.iteritems():
                 v.widget.render()
-            self.state.needsRender = False
+            self.state.needs_render = False
             
         if self.window is not None:
             self.containerScreen.surface.blit(self.screen.surface, (0, 0), self.window, pygame.BLEND_RGBA_ADD)

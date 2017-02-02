@@ -10,7 +10,7 @@ class ControllerBase(object):
 
         self.state = DotMap(
             keepActive=False,
-            needsRender=True
+            needs_render=True
         )
         self.persistentState = DotMap()
         self.settings = DotMap()
@@ -53,14 +53,14 @@ class ControllerBase(object):
     def render(self):
         print 'render ' + str(time()) + ' - ' + self.__class__.__name__
 
-        self.state.needsRender = False
+        self.state.needs_render = False
         
     def update(self, execution_type='fg'):
         if execution_type == 'fg':
             self.foreground()
-            if self.state.needsRender is True or (self.has_dialog() is True and self.dialog.state.needsRender is True):
+            if self.state.needs_render is True or (self.has_dialog() is True and self.dialog.state.needs_render is True):
                 self.render()
-                if self.has_dialog() is True and self.dialog.state.needsRender is True:
+                if self.has_dialog() is True and self.dialog.state.needs_render is True:
                     self.dialog.render()
         else:
             self.background()
@@ -130,14 +130,14 @@ class ControllerBase(object):
             self.dialog.close()
             
         self.dialog = dialog
-        self.state.needsRender = True
+        self.state.needs_render = True
 
     def close_dialog(self):
         if self.dialog is not None:
             self.dialog.cleanup()
             
         self.dialog = None
-        self.state.needsRender = True
+        self.state.needs_render = True
 
     def has_dialog(self):
         return self.dialog is not None

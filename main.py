@@ -116,8 +116,8 @@ def loop():
 
     if activeScreen:
         if oldActiveScreen != activeScreen:
-            coffeeBot.state.needsRender = True
-            coffeeBot.apps[coffeeBot.get_active_app()].state.needsRender = True
+            coffeeBot.state.needs_render = True
+            coffeeBot.apps[coffeeBot.get_active_app()].state.needs_render = True
             oldActiveScreen = activeScreen
         coffeeBot.update('fg')
     else:

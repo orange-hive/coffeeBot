@@ -64,7 +64,7 @@ class Dishes(AppBase):
                 self.state.countdownTicks = self.settings.countdownSeconds * self.settings.ticks
                 self.sendmail()
                 self.state.countdownActive = True
-                self.state.needsRender = True
+                self.state.needs_render = True
 
             self.create_widget(
                 'button',
@@ -95,21 +95,21 @@ class Dishes(AppBase):
                 self.state.timeformatted = '00:00'
                 
                 if self.state.countdownTicks <= self.settings.ticks * self.settings.hotCountdownSeconds and self.state.countdownTicks % (self.settings.ticks / 2) == 0:
-                    self.state.needsRender = True
+                    self.state.needs_render = True
                 
                 if self.state.countdownTicks <= (self.settings.ticks * self.settings.waitSecondsForDismantleSound * -1):
                     self.state.countdownTicks = 0
                     self.state.countdownEndSoundPlayed = False
                     self.state.keepActive = False
                     self.state.countdownActive = False
-                    self.state.needsRender = True
+                    self.state.needs_render = True
 
             else:
                 mins, secs = divmod(int(math.ceil(1.0 * self.state.countdownTicks / self.settings.ticks)), 60)
                 self.state.timeformatted = '{:02d}:{:02d}'.format(mins, secs)
                 
             if oldTimeFormatted != self.state.timeformatted:
-                self.state.needsRender = True
+                self.state.needs_render = True
         
     def background(self):
         super(Dishes, self).background()

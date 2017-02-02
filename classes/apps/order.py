@@ -69,7 +69,7 @@ class Order(AppBase):
             Utils.sendmail(receiver[1], receiver[0], 'Order', msg)
 
         self.open_dialog(MessageBox(self, message='Thank You', callback=self.close))
-        self.state.needsRender = True
+        self.state.needs_render = True
 
     def render(self):
         super(Order, self).render()

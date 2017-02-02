@@ -61,13 +61,13 @@ class Timer(AppBase):
             else:
                 
                 if self.state.countdownTicks <= self.settings.ticksPerSecond * self.settings.hotCountdownSeconds and self.state.countdownTicks % (self.settings.ticksPerSecond / 2) == 0:
-                    self.state.needsRender = True
+                    self.state.needs_render = True
 
                 mins, secs = divmod(int(math.ceil(1.0 * self.state.countdownTicks / self.settings.ticksPerSecond)), 60)
                 self.state.countdown = mins * 60 + secs
 
             if oldCountdown != self.state.countdown:
-                self.state.needsRender = True
+                self.state.needs_render = True
 
     def set_time(self, name):
         if name == 'tenUp' and self.state.countdown+600 < 3600:
@@ -87,7 +87,7 @@ class Timer(AppBase):
         elif name == 'hundredthDown' and self.state.countdown >= 5:
             self.state.countdown -= 5
             
-        self.state.needsRender = True
+        self.state.needs_render = True
          
     def start(self, name=None):
         if self.state.countdown > 0 and (self.get_widget('notification').checked is False or len(self.notifications) > 0):
@@ -96,7 +96,7 @@ class Timer(AppBase):
             self.state.started = True
             self.state.countdownTicks = self.state.countdown * self.settings.ticksPerSecond
         
-        self.state.needsRender = True
+        self.state.needs_render = True
         
     def stop(self, name=None):
         self.state.started = False
@@ -109,7 +109,7 @@ class Timer(AppBase):
         checkbox.notice = ''
 
         self.notifications = {}
-        self.state.needsRender = True
+        self.state.needs_render = True
 
     def open_notification_dialog(self):
         def callback(action, notifications=None):
@@ -131,7 +131,7 @@ class Timer(AppBase):
                     notifyNotice.append(key)
                 checkbox.notice = ', '.join(notifyNotice)
 
-            self.state.needsRender = True
+            self.state.needs_render = True
 
         dialog = NotificationDialog(self, receiver=tingbot.app.settings['timer']['notificationReceiver'], callback=callback)
         self.open_dialog(dialog)
@@ -276,7 +276,7 @@ class Timer(AppBase):
                     checkbox.notice = ''
                     self.notifications = {}
 
-                self.state.needsRender = True
+                self.state.needs_render = True
             
             self.create_widget(
                 'checkbox',
