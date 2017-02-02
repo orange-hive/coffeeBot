@@ -1,0 +1,6 @@
+pygame>=1.9.2
+tingbot
+dotmap==1.0
+pytz>=2013b
+gTTS
+

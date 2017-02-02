@@ -1,0 +1,56 @@
+{
+  "coffeeBot": {
+    "debug": true,
+    "debugEmail": "{your email}",
+    "musicFolder": "/music"
+  },
+  "dishes": {
+    "email": [ "{name}", "{email}" ]
+  },
+  "lc4c": {
+    "email": [ "{name}", "{email}" ]
+  },
+  "order": {
+    "products": {
+      "milk": {
+        "name": "Milk",
+        "conjunction": "is",
+        "icon": "\ue906",
+        "font": [244, 245, 245],
+        "background": [65, 190, 198],
+        "receiver": [
+          [ "{name}", "{email}" ]
+        ]
+      },
+      "sugar": {
+        "name": "Sugar",
+        "conjunction": "is",
+        "icon": "\ue904",
+        "receiver": [
+          [ "{name}", "{email}" ]
+        ]
+      },
+      "coffee": {
+        "name": "Coffee",
+        "conjunction": "is",
+        "icon": "\ue900",
+        "receiver": [
+          [ "{name}", "{email}" ]
+        ]
+      },
+      "towels": {
+        "name": "Towels",
+        "conjunction": "are",
+        "icon": "\ue905",
+        "receiver": [
+          [ "{name}", "{email}" ]
+        ]
+      }
+    }
+  },
+  "timer": {
+    "notificationReceiver": [
+      ["{two letter abbreviation}", ["{name}", "{email}"]]
+    ]
+  }
+}
