@@ -11,7 +11,8 @@
       "helo": "{helo}",
       "login": "{login}",
       "password": "{password}"
-    }
+    },
+    "webhook_key": "{hook key}"
   },
   "dishes": {
     "email": [ "{name}", "{email}" ]

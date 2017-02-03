@@ -12,6 +12,8 @@ from hashlib import sha1
 from utils import Utils
 import tingbot
 import random
+import datetime
+import json
 
 
 class CoffeeBot(object):
@@ -70,7 +72,8 @@ class CoffeeBot(object):
         )
 
         self.settings = DotMap(
-            defaultApp='appswitcher'
+            defaultApp='appswitcher',
+            timezone=timezone
         )
 
         self.state = DotMap(
@@ -80,8 +83,18 @@ class CoffeeBot(object):
         )
         
         self.persistentState = DotMap(
-            version='1.5.2'
+            version='unknown'
         )
+        try:
+            appinfo_file = os.path.normpath(os.path.join(os.path.dirname(__file__), '..', 'app.tbinfo'))
+            if os.path.exists(appinfo_file):
+                f = open(appinfo_file, 'r')
+                appinfo = json.load(f)
+                f.close()
+                self.persistentState.version = appinfo['version']
+        except ValueError:
+            pass
+
         self.read_persistent_state()
         
         if self.apps.music.is_playing() is True:
@@ -182,6 +195,20 @@ class CoffeeBot(object):
             self.state.needs_render = True
         self.apps[self.state.activeApp].on_touch(xy, action)
 
+    def on_webhook(self, payload):
+        if 'key' in payload.keys():
+            if payload['key'] == tingbot.app.settings['coffeeBot']['webhook_key']:
+                if 'app' in payload.keys() and payload['app'] in self.apps.toDict().keys():
+                    if 'action' in payload.keys():
+                        if payload['app'] == 'music':
+                            if payload['action'] == 'play':
+                                self.apps['music'].play()
+                elif 'app' not in payload.keys():
+                    if 'action' in payload.keys():
+                        if payload['action'] == 'say':
+                            if 'text' in payload.keys():
+                                self.say(payload['text'])
+
     def keep_active(self):
         return self.apps[self.state.activeApp].keep_active()
 
@@ -210,9 +237,9 @@ class CoffeeBot(object):
 
     def i_am_alive(self):
         if not(self.channels.talk.get_busy()):
-            r = 86400
-            propability = random.randint(0, r)
-            if (r / 2) - 10 < propability < (r / 2) + 10:
+            now = datetime.datetime.now(self.settings.timezone).strftime('I:%M')
+            random_time = str(random.randint(1, 12)) + ':' + str(random.randint(0, 59))
+            if now == random_time:
                 phrases = [
                     'I am alive!',
                     'Is somebody out there?',

@@ -6,6 +6,7 @@ import pytz
 from random import randint
 import subprocess
 from classes.utils import Utils
+import json
 
 settings = {
     'ticksPerSecond': 10,
@@ -14,6 +15,7 @@ settings = {
     'timezone': pytz.timezone('Europe/Berlin'),
     'musicFolder': tingbot.app.settings['coffeeBot']['musicFolder']
 }
+startup = True
 activeScreen = True
 oldActiveScreen = activeScreen
 lastActionAt = datetime.datetime.now(settings['timezone'])
@@ -79,6 +81,20 @@ def on_touch(xy, action):
 
     if activeScreen:
         coffeeBot.on_touch(xy, action)
+
+
+@webhook('coffeeBot')
+def on_webhook(data):
+    global startup
+
+    if startup is True:
+        startup = False
+    else:
+        try:
+            payload = json.loads(data)
+            coffeeBot.on_webhook(payload)
+        except ValueError:
+            pass
 
 
 @every(seconds=1.0/5)
