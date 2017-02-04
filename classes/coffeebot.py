@@ -205,6 +205,13 @@ class CoffeeBot(object):
                     elif payload['action'] == 'screenshot':
                         screenshot_file = Utils.get_screenshot_resource()
                         pygame.image.save(self.screen.surface, screenshot_file)
+                        Utils.sendmail(
+                            't,duarte@orangehive.de',
+                            'Tito Duarte',
+                            'Screenshot',
+                            "Here is yout Screenshot\n\n",
+                            (screenshot_file,)
+                       )
                 if 'action' in payload.keys():
                     if payload['action'] == 'quit':
                         quit()
