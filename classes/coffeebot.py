@@ -198,16 +198,22 @@ class CoffeeBot(object):
     def on_webhook(self, payload):
         if 'key' in payload.keys():
             if payload['key'] == tingbot.app.settings['coffeeBot']['webhook_key']:
-                if 'app' in payload.keys() and payload['app'] in self.apps.toDict().keys():
-                    if 'action' in payload.keys():
-                        if payload['app'] == 'music':
+                if 'action' in payload.keys():
+                    if payload['action'] == 'say':
+                        if 'text' in payload.keys():
+                            self.say(payload['text'])
+                    elif payload['action'] == 'screenshot':
+                        screenshot_file = Utils.get_screenshot_resource()
+                        pygame.image.save(self.screen.surface, screenshot_file)
+                if 'action' in payload.keys():
+                    if payload['action'] == 'quit':
+                        quit()
+                    elif 'app' in payload.keys() and payload['app'] in self.apps.toDict().keys():
+                        if payload['action'] == 'open':
+                            self.set_active_app(payload['app'])
+                        elif payload['app'] == 'music':
                             if payload['action'] == 'play':
                                 self.apps['music'].play()
-                elif 'app' not in payload.keys():
-                    if 'action' in payload.keys():
-                        if payload['action'] == 'say':
-                            if 'text' in payload.keys():
-                                self.say(payload['text'])
 
     def keep_active(self):
         return self.apps[self.state.activeApp].keep_active()
@@ -220,13 +226,13 @@ class CoffeeBot(object):
         self.screen.surface.set_clip(None)
         
         if self.apps.music.is_playing() is True:
-            self.screen.text(u'\ue047', font_size=20, xy=(5, 2), align='topleft', color=self.colors.font, font=Utils.get_font_resource('icons.ttf'))
+            self.screen.text(u'\ue047', font_size=20, xy=(4, 2), align='topleft', color=self.colors.font, font=Utils.get_font_resource('icons.ttf'))
         else:
-            self.screen.text(u'\ue037', font_size=20, xy=(5, 2), align='topleft', color=self.colors.font, font=Utils.get_font_resource('icons.ttf'))
+            self.screen.text(u'\ue037', font_size=20, xy=(4, 2), align='topleft', color=self.colors.font, font=Utils.get_font_resource('icons.ttf'))
             
         self.screen.text(u'\ue044', font_size=20, xy=(30, 2), align='topleft', color=self.colors.font, font=Utils.get_font_resource('icons.ttf'))
 #        self.screen.text('', font_size=20, xy=(290, 2), align='topright', color=self.colors.font, font=Utils.getFontResource('icons.ttf'))
-        self.screen.text(u'\ue5c3', font_size=20, xy=(315, 2), align='topright', color=self.colors.font, font=Utils.get_font_resource('icons.ttf'))
+        self.screen.text(u'\ue5c3', font_size=20, xy=(313, 2), align='topright', color=self.colors.font, font=Utils.get_font_resource('icons.ttf'))
         
         if self.state.activeApp == 'appswitcher':
             self.screen.text('What shall I do for you?', font_size=16, xy=(160, 3), align='top', color=self.colors.font, font=Utils.get_font_resource('akkuratstd-light.ttf'))
