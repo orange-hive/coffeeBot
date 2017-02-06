@@ -206,15 +206,16 @@ class CoffeeBot(object):
                         screenshot_file = Utils.get_screenshot_resource()
                         pygame.image.save(self.screen.surface, screenshot_file)
                         Utils.sendmail(
-                            't,duarte@orangehive.de',
-                            'Tito Duarte',
+                            tingbot.app.settings['coffeeBot']['screenshot_receiver'][1],
+                            tingbot.app.settings['coffeeBot']['screenshot_receiver'][0],
                             'Screenshot',
                             "Here is yout Screenshot\n\n",
                             (screenshot_file,)
-                       )
-                if 'action' in payload.keys():
-                    if payload['action'] == 'quit':
-                        quit()
+                        )
+                    elif 'action' in payload.keys():
+                        if payload['action'] == 'quit':
+                            quit()
+
                     elif 'app' in payload.keys() and payload['app'] in self.apps.toDict().keys():
                         if payload['action'] == 'open':
                             self.set_active_app(payload['app'])

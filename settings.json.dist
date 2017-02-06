@@ -12,7 +12,8 @@
       "login": "{login}",
       "password": "{password}"
     },
-    "webhook_key": "{hook key}"
+    "webhook_key": "{hook key}",
+    "screenshot_receiver": [ "{name}", "{email}" ]
   },
   "dishes": {
     "email": [ "{name}", "{email}" ]
