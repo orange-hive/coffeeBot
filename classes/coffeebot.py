@@ -209,7 +209,7 @@ class CoffeeBot(object):
                             tingbot.app.settings['coffeeBot']['screenshot_receiver'][1],
                             tingbot.app.settings['coffeeBot']['screenshot_receiver'][0],
                             'Screenshot',
-                            "Here is yout Screenshot\n\n",
+                            "Here is your Screenshot\n\n",
                             (screenshot_file,)
                         )
                     elif 'action' in payload.keys():
