@@ -251,8 +251,8 @@ class CoffeeBot(object):
 
     def i_am_alive(self):
         if not(self.channels.talk.get_busy()):
-            now = datetime.datetime.now(self.settings.timezone).strftime('%I:%M')
-            random_time = str(random.randint(1, 12)) + ':' + str(random.randint(0, 59))
+            now = datetime.datetime.now(self.settings.timezone).strftime('%H:%M:%S')
+            random_time = str(random.randint(1, 23)) + ':' + str(random.randint(0, 59)) + ':' + str(random.randint(0, 59))
             if now == random_time:
                 phrases = [
                     'I am alive!',
@@ -265,6 +265,7 @@ class CoffeeBot(object):
                     'I never saw my creator!'
                 ]
                 self.say(random.choice(phrases))
+                print "i am alive: " + now
 
     def update(self, execution_type='fg'):
         if execution_type == 'fg':
