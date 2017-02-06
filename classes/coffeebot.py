@@ -251,7 +251,7 @@ class CoffeeBot(object):
 
     def i_am_alive(self):
         if not(self.channels.talk.get_busy()):
-            now = datetime.datetime.now(self.settings.timezone).strftime('I:%M')
+            now = datetime.datetime.now(self.settings.timezone).strftime('%I:%M')
             random_time = str(random.randint(1, 12)) + ':' + str(random.randint(0, 59))
             if now == random_time:
                 phrases = [
