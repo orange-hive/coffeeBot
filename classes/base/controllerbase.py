@@ -1,6 +1,7 @@
 from dotmap import DotMap
 from ..widgets import Button, Checkbox, ScrollArea
 from time import time
+from tingbot.utils import call_with_optional_arguments
 
 
 class ControllerBase(object):
@@ -69,7 +70,7 @@ class ControllerBase(object):
         if parent is None:
             parent = self
         
-        def noop(name=None):
+        def noop():
             pass
 
         if callback is None:
@@ -81,24 +82,24 @@ class ControllerBase(object):
         if widget_type == 'button':
             widget = Button(parent, name, **kwargs)
 
-            def default_action(name):
+            def default_action():
                 noop()
         elif widget_type == 'checkbox':
             widget = Checkbox(parent, name, **kwargs)
 
-            def default_action(name):
+            def default_action():
                 widget.toggle()
         elif widget_type == 'scrollarea':
             widget = ScrollArea(parent, name, **kwargs)
             
-            def default_action(name):
+            def default_action():
                 noop()
         else:
             raise Exception('unknown control of type ' + widget_type)
             
-        def action(name):
-            default_action(name)
-            callback(name)
+        def action():
+            call_with_optional_arguments(default_action, name=name)
+            call_with_optional_arguments(callback, name=name)
             
         widget.action = action
 

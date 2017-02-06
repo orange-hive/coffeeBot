@@ -14,7 +14,7 @@ class MessageBox(DialogBase):
 
     def create_widgets(self):
 
-        def ok_action(name):
+        def ok_action():
             self.callback()
             self.close()
             

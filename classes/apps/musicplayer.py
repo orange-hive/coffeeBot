@@ -119,7 +119,7 @@ class MusicPlayer(AppBase):
             self.play()
       
     def create_widgets(self):
-        def action(name):
+        def action():
             self.toggle()
         
         self.create_widget(

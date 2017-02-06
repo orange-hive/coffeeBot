@@ -66,7 +66,7 @@ class Dishes(AppBase):
         self.state.needs_render = True
 
     def create_widgets(self):
-            def action(name):
+            def action():
                 self.start()
 
             self.create_widget(
@@ -88,7 +88,7 @@ class Dishes(AppBase):
             self.state.keepActive = True
             self.state.countdownTicks -= 1
     
-            oldTimeFormatted = self.state.timeformatted
+            old_time_formatted = self.state.timeformatted
     
             if self.state.countdownTicks <= 0:
                 if self.state.countdownEndSoundPlayed is False:
@@ -111,7 +111,7 @@ class Dishes(AppBase):
                 mins, secs = divmod(int(math.ceil(1.0 * self.state.countdownTicks / self.settings.ticks)), 60)
                 self.state.timeformatted = '{:02d}:{:02d}'.format(mins, secs)
                 
-            if oldTimeFormatted != self.state.timeformatted:
+            if old_time_formatted != self.state.timeformatted:
                 self.state.needs_render = True
         
     def background(self):
@@ -127,12 +127,12 @@ class Dishes(AppBase):
         self.screen.fill(color=self.colors.background)
 
         if self.state.countdownActive is True:
-            backgroundColor = self.colors.background
-            if self.state.countdownTicks <= 0 and self.state.countdownTicks <= self.settings.ticks * self.settings.hotCountdownSeconds: 
+            background_color = self.colors.background
+            if self.state.countdownTicks <= 0 and self.state.countdownTicks <= self.settings.ticks * self.settings.hotCountdownSeconds:
                 if math.ceil(self.state.countdownTicks / (self.settings.ticks / 2)) % 2 == 0:
-                    backgroundColor = self.colors.highlight
+                    background_color = self.colors.highlight
 
-            self.screen.fill(color=backgroundColor)
+            self.screen.fill(color=background_color)
 
             self.screen.text("Call For Dishes was activated.\nPlease give all a change\nto bringe the dishes in.", font_size=14, xy=(160, 155), color=self.colors.font, font=Utils.get_font_resource('akkuratstd-light.ttf'))
             self.screen.text(self.state.timeformatted, color=self.colors.font, font_size=60, xy=(160, 85), font=Utils.get_font_resource('akkuratstd-bold.ttf'))

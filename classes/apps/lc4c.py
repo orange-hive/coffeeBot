@@ -81,7 +81,7 @@ class LastCallForCoffee(AppBase):
         self.channels.system.play(self.sounds.countdownEnd)
 
     def create_widgets(self):
-            def action(name):
+            def action():
                 if self.is_armed() is True:
                     self.parent.say('OK. I will make a last call for coffee!')
                     self.get_widget('lc4c').enabled = False
@@ -127,7 +127,7 @@ class LastCallForCoffee(AppBase):
             self.state.keepActive = True
             self.state.countdownTicks -= 1
     
-            oldTimeFormatted = self.state.timeformatted
+            old_time_formatted = self.state.timeformatted
     
             if self.state.countdownTicks <= 0:
                 if self.state.countdownEndSoundPlayed is False:
@@ -155,7 +155,7 @@ class LastCallForCoffee(AppBase):
                 mins, secs = divmod(int(math.ceil(1.0 * self.state.countdownTicks / self.settings.ticks)), 60)
                 self.state.timeformatted = '{:02d}:{:02d}'.format(mins, secs)
                 
-            if oldTimeFormatted != self.state.timeformatted:
+            if old_time_formatted != self.state.timeformatted:
                 self.state.needs_render = True
         
     def background(self):
@@ -171,12 +171,12 @@ class LastCallForCoffee(AppBase):
         self.screen.fill(color=self.colors.background)
 
         if self.state.countdownActive is True:
-            backgroundColor = self.colors.background
+            background_color = self.colors.background
             if self.state.countdownTicks <= 0 and self.state.countdownTicks <= self.settings.ticks * self.settings.hotCountdownSeconds: 
                 if math.ceil(self.state.countdownTicks / (self.settings.ticks / 2)) % 2 == 0:
-                    backgroundColor = self.colors.highlight
+                    background_color = self.colors.highlight
 
-            self.screen.fill(color=backgroundColor)
+            self.screen.fill(color=background_color)
 
             self.screen.text("Last Call For Coffee was activated.\nPlease give these coffee junkies\nsome time to come and get their medicine.", font_size=14, xy=(160, 155), color=self.colors.font, font=Utils.get_font_resource('akkuratstd-light.ttf'))
             self.screen.text(self.state.timeformatted, color=self.colors.font, font_size=60, xy=(160, 85), font=Utils.get_font_resource('akkuratstd-bold.ttf'))

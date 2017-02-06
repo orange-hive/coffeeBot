@@ -1,5 +1,6 @@
 from ..base.widgetbase import WidgetBase
 from ..utils import Utils
+from tingbot.utils import call_with_optional_arguments
 
 
 class Button(WidgetBase):
@@ -64,4 +65,4 @@ class Button(WidgetBase):
             self.screen.surface.get_abs_offset()
         )
         if self.enabled and action == 'down' and self.hitarea.collidepoint(rel_xy) and self.action is not None:
-            self.action(self.name)
+            call_with_optional_arguments(self.action, name=self.name)

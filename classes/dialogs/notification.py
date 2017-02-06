@@ -13,10 +13,10 @@ class NotificationDialog(DialogBase):
         
         self.state.selectedReceiver = {}
 
-        receiverTuple = []
+        receiver_tuple = []
         if receiver is not None:
             for r in receiver:
-                receiverTuple.append(
+                receiver_tuple.append(
                     (
                         r[0],
                         (
@@ -26,7 +26,7 @@ class NotificationDialog(DialogBase):
                     )
                 )
 
-        self.settings.availableReceiver = OrderedDict(receiverTuple)
+        self.settings.availableReceiver = OrderedDict(receiver_tuple)
 
         self.create_widgets()
 

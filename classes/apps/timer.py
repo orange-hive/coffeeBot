@@ -51,7 +51,7 @@ class Timer(AppBase):
         if self.state.started is True:
             self.state.countdownTicks -= 1
 
-            oldCountdown = self.state.countdown
+            old_countdown = self.state.countdown
 
             if self.state.countdownTicks <= 0:
                 self.sendmails()
@@ -66,7 +66,7 @@ class Timer(AppBase):
                 mins, secs = divmod(int(math.ceil(1.0 * self.state.countdownTicks / self.settings.ticksPerSecond)), 60)
                 self.state.countdown = mins * 60 + secs
 
-            if oldCountdown != self.state.countdown:
+            if old_countdown != self.state.countdown:
                 self.state.needs_render = True
 
     def set_time(self, name):
@@ -89,7 +89,7 @@ class Timer(AppBase):
             
         self.state.needs_render = True
          
-    def start(self, name=None):
+    def start(self):
         if self.state.countdown > 0 and (self.get_widget('notification').checked is False or len(self.notifications) > 0):
             if len(self.notifications) > 0:
                 self.parent.say('OK. I will notify you by email.')
@@ -98,7 +98,7 @@ class Timer(AppBase):
         
         self.state.needs_render = True
         
-    def stop(self, name=None):
+    def stop(self):
         self.state.started = False
         self.state.countdown = 0
         self.state.countdownTicks = 0
@@ -126,10 +126,10 @@ class Timer(AppBase):
                 checkbox.checked = True
                 checkbox.move_to((15, 150), 'topleft')
                 self.notifications = notifications
-                notifyNotice = []
+                notify_notice = []
                 for key, receiver in self.notifications.iteritems():
-                    notifyNotice.append(key)
-                checkbox.notice = ', '.join(notifyNotice)
+                    notify_notice.append(key)
+                checkbox.notice = ', '.join(notify_notice)
 
             self.state.needs_render = True
 
@@ -266,7 +266,7 @@ class Timer(AppBase):
                 font_size=24
             )
             
-            def notification_action(name):
+            def notification_action():
                 checkbox = self.get_widget('notification')
                 if checkbox.checked is True:
                     self.parent.say('OK. Please select who I should notify!')
@@ -320,11 +320,11 @@ class Timer(AppBase):
         self.screen.fill(color=self.colors.background)
 
         if self.state.started is True:
-            backgroundColor = self.colors.background
+            background_color = self.colors.background
             if self.state.countdownTicks <= self.settings.ticksPerSecond * self.settings.hotCountdownSeconds: 
                 if math.ceil(self.state.countdownTicks / (self.settings.ticksPerSecond / 2)) % 2 == 0:
-                    backgroundColor = self.colors.highlight
-            self.screen.fill(color=backgroundColor)
+                    background_color = self.colors.highlight
+            self.screen.fill(color=background_color)
 
         ten = self.state.countdown / 600
         one = (self.state.countdown - ten * 600) / 60

@@ -15,11 +15,11 @@ class Confirm(DialogBase):
 
     def create_widgets(self):
 
-        def yes_action(name):
+        def yes_action():
             self.yesCallback()
             self.close()
             
-        def no_action(name):
+        def no_action():
             self.noCallback()
             self.close()
 
