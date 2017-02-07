@@ -257,7 +257,7 @@ class CoffeeBot(object):
                 phrases = [
                     'I am alive!',
                     'Is somebody out there?',
-                    'Hoo Hoo?',
+                    'Hoo, Hoo?',
                     'I feel so lonely',
                     'dumb dee dumb',
                     'doo dee doo',
