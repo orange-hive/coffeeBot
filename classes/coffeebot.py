@@ -123,7 +123,7 @@ class CoffeeBot(object):
                     else:
                         mpg123_path = 'mpg123'
 
-                    tts = gTTS(text=phrase, lang='en-US')
+                    tts = gTTS(text=phrase, lang='en-us')
                     with NamedTemporaryFile(suffix='.mp3', delete=False) as f:
                         tempfile = f.name
                     tts.save(tempfile)
@@ -196,7 +196,7 @@ class CoffeeBot(object):
         self.apps[self.state.activeApp].on_touch(xy, action)
 
     def on_webhook(self, payload):
-        if 'key' in payload.keys():
+        if tingbot.app.settings['coffeeBot']['webhook_active'] is True and 'key' in payload.keys():
             if payload['key'] == tingbot.app.settings['coffeeBot']['webhook_key']:
                 if 'action' in payload.keys():
                     if payload['action'] == 'say':

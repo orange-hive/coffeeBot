@@ -12,6 +12,7 @@
       "login": "{login}",
       "password": "{password}"
     },
+    "webhook_active": false,
     "webhook_key": "{hook key}",
     "screenshot_receiver": [ "{name}", "{email}" ]
   },
