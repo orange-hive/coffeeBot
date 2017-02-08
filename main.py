@@ -12,7 +12,7 @@ settings = {
     'ticksPerSecond': 10,
     'countdownSeconds': 300,
     'sleepAfterSeconds': 300,
-    'timezone': pytz.timezone('Europe/Berlin'),
+    'timezone': pytz.timezone(tingbot.app.settings['coffeeBot']['timezone']),
     'musicFolder': tingbot.app.settings['coffeeBot']['musicFolder']
 }
 startup = True
@@ -41,8 +41,7 @@ def left_button():
     global lastActionAt
 
     lastActionAt = datetime.datetime.now(settings['timezone'])
-    if activeScreen:
-        coffeeBot.button_press('left')
+    coffeeBot.button_press('left')
 
 
 @midleft_button.press
@@ -50,8 +49,7 @@ def midleft_button():
     global lastActionAt
 
     lastActionAt = datetime.datetime.now(settings['timezone'])
-    if activeScreen:
-        coffeeBot.button_press('midleft')
+    coffeeBot.button_press('midleft')
 
 
 @midright_button.press
@@ -59,8 +57,7 @@ def midright_button():
     global lastActionAt
 
     lastActionAt = datetime.datetime.now(settings['timezone'])
-    if activeScreen:
-        coffeeBot.button_press('midright')
+    coffeeBot.button_press('midright')
 
 
 @right_button.press
@@ -68,8 +65,7 @@ def right_button():
     global lastActionAt
 
     lastActionAt = datetime.datetime.now(settings['timezone'])
-    if activeScreen:
-        coffeeBot.button_press('right')
+    coffeeBot.button_press('right')
 
 
 @touch()
