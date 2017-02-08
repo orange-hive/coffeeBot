@@ -1,6 +1,6 @@
 {
   "coffeeBot": {
-    "debug": true,
+    "debug": true|false,
     "debugEmail": "{your email}",
     "musicFolder": "/music",
     "timezone": "Europe/Berlin",
@@ -10,7 +10,8 @@
       "port": {port},
       "helo": "{helo}",
       "login": "{login}",
-      "password": "{password}"
+      "password": "{password}",
+      "ssl": true|false
     },
     "webhook_active": false,
     "webhook_key": "{hook key}",

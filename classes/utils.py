@@ -81,11 +81,19 @@ class Utils(object):
     @staticmethod
     def sendmail(to_email, to_name, subject, message, attachments=()):
         def sender():
-            server = smtplib.SMTP(
-                tingbot.app.settings['coffeeBot']['smtp']['host'],
-                tingbot.app.settings['coffeeBot']['smtp']['port'],
-                tingbot.app.settings['coffeeBot']['smtp']['helo']
-            )
+            if tingbot.app.settings['coffeeBot']['smtp']['ssl'] is True:
+                server = smtplib.SMTP_SSL(
+                    tingbot.app.settings['coffeeBot']['smtp']['host'],
+                    tingbot.app.settings['coffeeBot']['smtp']['port'],
+                    tingbot.app.settings['coffeeBot']['smtp']['helo']
+                )
+            else:
+                server = smtplib.SMTP(
+                    tingbot.app.settings['coffeeBot']['smtp']['host'],
+                    tingbot.app.settings['coffeeBot']['smtp']['port'],
+                    tingbot.app.settings['coffeeBot']['smtp']['helo']
+                )
+
             server.login(
                 tingbot.app.settings['coffeeBot']['smtp']['login'],
                 tingbot.app.settings['coffeeBot']['smtp']['password']
