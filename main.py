@@ -56,8 +56,10 @@ def midleft_button():
 def midright_button():
     global lastActionAt
 
-    lastActionAt = datetime.datetime.now(settings['timezone'])
-    coffeeBot.button_press('midright')
+    if activeScreen:
+        lastActionAt = datetime.datetime.now(settings['timezone']) - datetime.timedelta(seconds=settings['sleepAfterSeconds'])
+    else:
+        lastActionAt = datetime.datetime.now(settings['timezone'])
 
 
 @right_button.press
@@ -106,6 +108,8 @@ def activitycheck():
     ):
         activeScreen = True
         screen.brightness = 100
+        if oldActiveScreen is False:
+            coffeeBot.set_active_app('appswitcher')
     else:
         activeScreen = False
         screen.brightness = 50
