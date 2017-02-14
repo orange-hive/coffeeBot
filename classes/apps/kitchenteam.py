@@ -24,8 +24,8 @@ class Kitchenteam(AppBase):
                 or not(datetime.datetime.strptime(self.persistentState.lastMailSent, '%Y-%m-%dT%H:%M:%S').strftime('%Y-%m-%d') == datetime.datetime.now(self.settings.timezone).strftime('%Y-%m-%d'))
             ) and (
                 Utils.time_in_range(
-                    datetime.time(17, 0, 0),
-                    datetime.time(17, 59, 59),
+                    datetime.time(8, 0, 0),
+                    datetime.time(8, 59, 59),
                     datetime.datetime.now(self.settings.timezone).time()
                 )
             )
