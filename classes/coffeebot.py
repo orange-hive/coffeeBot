@@ -1,4 +1,4 @@
-from apps import AppSwitcher, Dishes, LastCallForCoffee, MusicPlayer, Order, Timer
+from apps import AppSwitcher, Dishes, LastCallForCoffee, MusicPlayer, Order, Timer, Kitchenteam
 from dotmap import DotMap
 import threading
 from tempfile import NamedTemporaryFile
@@ -68,7 +68,8 @@ class CoffeeBot(object):
             dishes=Dishes(self, countdown_seconds, ticks_per_second, timezone),
             music=MusicPlayer(self, music_folder, timezone),
             timer=Timer(self, ticks_per_second),
-            order=Order(self)
+            order=Order(self),
+            kitchenteam=Kitchenteam(self, timezone),
         )
 
         self.settings = DotMap(

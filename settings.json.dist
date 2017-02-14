@@ -63,5 +63,16 @@
     "notificationReceiver": [
       ["{two letter abbreviation}", ["{name}", "{email}"]]
     ]
+  },
+  "kitchenteam": {
+    "sun": [],
+    "mon": [
+      [ "{name}", "{email}" ]
+    ],
+    "tue": [],
+    "wed": [],
+    "thu": [],
+    "fri": [],
+    "sat": []
   }
 }
