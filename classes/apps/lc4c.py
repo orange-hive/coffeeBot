@@ -72,7 +72,7 @@ class LastCallForCoffee(AppBase):
         msg += "The coffee bot.\n"
 
         receiver = tingbot.app.settings['lc4c']['email']
-        Utils.sendmail(receiver[1], receiver[0], 'Last Call for Coffee!', msg)
+        Utils.sendmail(receiver[1], receiver[0], 'Last Call for Coffee!', msg, expires_minutes=15)
 
     def play_dismantle_sound(self):
         self.parent.say('The fantastic coffeemachine can now be disassembled! Thank you for waiting!')

@@ -79,7 +79,7 @@ class Utils(object):
         return state
 
     @staticmethod
-    def sendmail(to_email, to_name, subject, message, attachments=()):
+    def sendmail(to_email, to_name, subject, message, attachments=(), expires_minutes=None):
         def sender():
             if tingbot.app.settings['coffeeBot']['smtp']['ssl'] is True:
                 server = smtplib.SMTP_SSL(
@@ -103,6 +103,11 @@ class Utils(object):
             msg['Subject'] = Header(subject, 'utf-8')
             msg['From'] = tingbot.app.settings['coffeeBot']['smtp']['sender'][0] + ' <' + tingbot.app.settings['coffeeBot']['smtp']['sender'][1] + '>'
             msg['To'] = "\"%s\" <%s>" % (Header(to_name, 'utf-8'), to_email)
+
+            if expires_minutes is not None:
+                timezone = pytz.timezone(tingbot.app.settings['coffeeBot']['timezone'])
+                expire_date = datetime.datetime.now(timezone) + datetime.timedelta(minutes=expires_minutes)
+                msg['Expires'] = msg['Expiry-Date'] = expire_date.strftime('%a, %d %b %Y %H:%M:%S %z')
 
             body = MIMEText(message.encode('utf-8'), 'plain', 'utf-8')
             msg.attach(body)

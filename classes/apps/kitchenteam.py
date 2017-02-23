@@ -33,19 +33,22 @@ class Kitchenteam(AppBase):
 
     def sendmail(self):
         today = datetime.datetime.now(self.settings.timezone).strftime('%a').lower()
-
-        team = []
-        for receiver in tingbot.app.settings['kitchenteam'][today]:
-            team.append(receiver[0])
+        today_full = datetime.datetime.now(self.settings.timezone).strftime('%A').lower()
 
         for receiver in tingbot.app.settings['kitchenteam'][today]:
-            msg = "Hi " + receiver[0] + ",\n\n"
-            msg += "I kindly remember you, that you are part of the kitchen team today.\n"
-            msg += "\nThe team today consists of:\n\n" + "\n".join(team) + "\n\n"
-            msg += "\nThank you.\n\n"
-            msg += "\nKind regards\n"
-            msg += "The coffee bot.\n"
-            Utils.sendmail(receiver[1], receiver[0], 'Kitchen Team', msg)
+            team = []
+            for member in tingbot.app.settings['kitchenteam'][today]:
+                if receiver[1] != member[1]:
+                    team.append(member[0])
+
+            msg = "Good morning " + receiver[0] + ",\n\n"
+            msg += "It's " + today_full + " again and as you know, today you are part of the kitchen cleaning team.\n"
+            msg += "You're teammates are " + ", ".join(team[:-1]) + " and " + team[-1] + ".\n"
+            msg += "\nHave a wonderful day.\n"
+            msg += "Kind regards, the coffeeBot\n"
+            msg += "\nPS: Here you'll find an overview of the tasks for the kitchen team.\n"
+            msg += "http://wiki.orangehive.de/index.php/Kitchen-rules#Duties_for_the_current_team\n"
+            Utils.sendmail(receiver[1], receiver[0], 'You\'re part of the team!', msg, expires_minutes=720)
 
     def background(self):
         super(Kitchenteam, self).background()

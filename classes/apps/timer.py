@@ -313,7 +313,7 @@ class Timer(AppBase):
             msg += "\nKind regards\n"
             msg += "The coffee bot.\n"
     
-            Utils.sendmail(receiver[1], receiver[0], 'Kitchen Timer!', msg)
+            Utils.sendmail(receiver[1], receiver[0], 'Kitchen Timer!', msg, expires_minutes=60)
 
     def render(self):
         super(Timer, self).render()

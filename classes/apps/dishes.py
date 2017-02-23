@@ -53,7 +53,7 @@ class Dishes(AppBase):
         msg += "The coffee bot.\n"
 
         receiver = tingbot.app.settings['dishes']['email']
-        Utils.sendmail(receiver[1], receiver[0], 'Call for Dishes!', msg)
+        Utils.sendmail(receiver[1], receiver[0], 'Call for Dishes!', msg, expires_minutes=15)
 
     def play_countdown_end_sound(self):
         self.channels.system.play(self.sounds.countdownEnd)
