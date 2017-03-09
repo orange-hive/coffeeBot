@@ -169,6 +169,8 @@ class CoffeeBot(object):
             self.state.previousApp = self.state.activeApp
             self.state.activeApp = app_name
             self.apps[self.state.activeApp].state.needs_render = True
+            if self.apps[self.state.activeApp].has_dialog():
+                self.apps[self.state.activeApp].dialog.state.needs_render = True
             self.save_persistent_state()
         else:
             self.say('Sorry. You cannot leave this application at the moment.')

@@ -5,7 +5,7 @@ from ..utils import Utils
 
 class ScrollArea(Container):
 
-    def __init__(self, parent, name, xy=None, size=(100, 100), align='center', container_size=None, color=None):
+    def __init__(self, parent, name, xy=None, size=(100, 100), align='center', container_size=None, color=None, font_color=None):
         
         super(ScrollArea, self).__init__(parent, name,  xy=xy, size=size, align=align, container_size=container_size)
         
@@ -18,6 +18,10 @@ class ScrollArea(Container):
         self.scrollbar = pygame.Rect(self.containerScreen.width - self.scrollbarWidth, self.scrollbarButtonUp.height, self.scrollbarWidth, self.containerScreen.height - self.scrollbarButtonDown.height)
 
         self.color = color
+        if font_color is None:
+            self.font_color = (255, 255, 255)
+        else:
+            self.font_color = font_color
         
         if self.window is not None:
             self.window.width = self.window.width - self.scrollbar.width
@@ -30,9 +34,9 @@ class ScrollArea(Container):
             pygame.draw.rect(self.containerScreen.surface, self.color, self.scrollbar, 1)
 
             pygame.draw.rect(self.containerScreen.surface, self.color, self.scrollbarButtonUp)
-            self.containerScreen.text(u'\ue5c7', xy=(self.scrollbarButtonUp.x, self.scrollbarButtonUp.y), color=(255, 255, 255), align='topleft', font=Utils.get_font_resource('icons.ttf'), font_size=40)
+            self.containerScreen.text(u'\ue5c7', xy=(self.scrollbarButtonUp.x, self.scrollbarButtonUp.y), color=self.font_color, align='topleft', font=Utils.get_font_resource('icons.ttf'), font_size=40)
             pygame.draw.rect(self.containerScreen.surface, self.color, self.scrollbarButtonDown)
-            self.containerScreen.text(u'\ue5c5', xy=(self.scrollbarButtonDown.x, self.scrollbarButtonDown.y), color=(255, 255, 255), align='topleft', font=Utils.get_font_resource('icons.ttf'), font_size=40)
+            self.containerScreen.text(u'\ue5c5', xy=(self.scrollbarButtonDown.x, self.scrollbarButtonDown.y), color=self.font_color, align='topleft', font=Utils.get_font_resource('icons.ttf'), font_size=40)
 
     def on_touch(self, xy, action):
         rel_xy = self._xy_subtract(
