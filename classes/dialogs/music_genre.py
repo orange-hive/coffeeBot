@@ -3,15 +3,15 @@ from ..utils import Utils
 from math import ceil
 
 
-class MusicFolderDialog(DialogBase):
+class MusicGenreDialog(DialogBase):
     
-    def __init__(self, parent, folder=[], active_folder=[], callback=None):
-        super(MusicFolderDialog, self).__init__(parent)
+    def __init__(self, parent, genres=[], active_genres=[], callback=None):
+        super(MusicGenreDialog, self).__init__(parent)
         
         self.callback = callback
         
-        self.state.selectedFolder = active_folder
-        self.settings.availableFolder = folder
+        self.state.selectedGenres = active_genres
+        self.settings.availableGenres = genres
 
         self.colors.button.active.background = (255, 222, 45)
         self.colors.button.active.font = (0, 0, 0)
@@ -30,7 +30,7 @@ class MusicFolderDialog(DialogBase):
             align='topleft',
             color=self.colors.button.active.background,
             font_color=self.colors.button.active.font,
-            container_size=(300, (ceil(len(self.settings.availableFolder) / 5.0) * 5) * (height + padding))
+            container_size=(300, (ceil(len(self.settings.availableGenres) / 5.0) * 5) * (height + padding))
         )
 
         def checkbox_action(name):
@@ -38,29 +38,29 @@ class MusicFolderDialog(DialogBase):
             self.state.needs_render = True
             checkbox = self.get_widget('container').get_widget(name)
             if checkbox.checked is True:
-                self.state.selectedFolder.append(checkbox.value)
+                self.state.selectedGenres.append(checkbox.value)
             else:
-                self.state.selectedFolder.remove(checkbox.value)
+                self.state.selectedGenres.remove(checkbox.value)
 
         xy = (10, 0)
-        print self.settings.availableFolder
-        for folder in self.settings.availableFolder:
-            print folder
+        print self.settings.availableGenres
+        for genres in self.settings.availableGenres:
+            print genres
             self.create_widget(
                 'checkbox',
-                'button_' + folder,
+                'button_' + genres,
                 checkbox_action,
                 container,
                 xy=xy,
                 size=(260, height),
                 align='topleft',
                 color=(255, 255, 255),
-                text=folder,
+                text=genres,
                 font=Utils.get_font_resource('akkuratstd-light.ttf'),
                 font_size=20,
                 icon_size=20,
-                value=folder,
-                checked=(folder in self.state.selectedFolder)
+                value=genres,
+                checked=(genres in self.state.selectedGenres)
             )
             
             xy = self._xy_add(xy, (0, height + padding))
@@ -86,7 +86,7 @@ class MusicFolderDialog(DialogBase):
         
         def ok_action(name):
             if self.callback is not None:
-                self.callback(name, folder=self.state.selectedFolder)
+                self.callback(name, genres=self.state.selectedGenres)
             self.close()
         
         self.create_widget(
@@ -104,7 +104,7 @@ class MusicFolderDialog(DialogBase):
         )
 
     def render(self):
-        super(MusicFolderDialog, self).render()
+        super(MusicGenreDialog, self).render()
         
         self.screen.fill((self.colors.background[0], self.colors.background[1], self.colors.background[2], 210))
         
