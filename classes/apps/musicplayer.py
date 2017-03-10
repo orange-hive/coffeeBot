@@ -78,14 +78,16 @@ class MusicPlayer(AppBase):
 
         def play():
             print 'music file: ' + filename
-            pygame.mixer.music.load(filename)
+
+            try:
+                pygame.mixer.music.load(filename)
+                pygame.mixer.music.play()
+            except RuntimeError:
+                self.parent.say('Sorry, I could not load the song. Please try again!')
+                self.stop(mute_talk=True)
+
             self.state.loadingFile = False
             self.state.loadingStartedAt = None
-            try:
-                pygame.mixer.music.play()
-            except:
-                self.skip(mute_talk=True)
-
             self.state.playingFile = filename
             self.state.needs_render = True
             self.parent.needs_render = True
