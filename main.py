@@ -8,6 +8,9 @@ import subprocess
 from classes.utils import Utils
 import json
 
+screen.surface.convert()
+screen.fill((0, 0, 0, 0))
+
 settings = {
     'ticksPerSecond': 10,
     'countdownSeconds': 300,

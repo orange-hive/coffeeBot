@@ -55,6 +55,9 @@ class ControllerBase(object):
         print 'render ' + str(time()) + ' - ' + self.__class__.__name__
 
         self.state.needs_render = False
+
+    def post_render(self):
+        pass
         
     def update(self, execution_type='fg'):
         if execution_type == 'fg':
@@ -63,6 +66,8 @@ class ControllerBase(object):
                 self.render()
                 if self.has_dialog() is True and self.dialog.state.needs_render is True:
                     self.dialog.render()
+                    self.dialog.post_render()
+                self.post_render()
         else:
             self.background()
 

@@ -235,7 +235,7 @@ class CoffeeBot(object):
         self.screen.surface.set_clip(pygame.Rect(0, 0, 320, 25))
         self.screen.fill(self.colors.background)
         self.screen.surface.set_clip(None)
-        
+
         if self.apps.music.is_playing() is True:
             self.screen.text(u'\ue047', font_size=20, xy=(4, 2), align='topleft', color=self.colors.font, font=Utils.get_font_resource('icons.ttf'))
         else:
@@ -274,16 +274,23 @@ class CoffeeBot(object):
         if execution_type == 'fg':
             if self.state.needs_render is True:
                 self.render()
-                
+
+            render_version = self.apps[self.state.activeApp].state.needs_render is True or (
+                self.apps[self.state.activeApp].has_dialog() is True
+                and
+                self.apps[self.state.activeApp].dialog.state.needs_render is True
+            )
+
             self.apps[self.state.activeApp].update('fg')
             self.screen.update()
 
-            if tingbot.app.settings['coffeeBot']['debug']:
-                version_text = self.persistentState.version + ' - debug'
-            else:
-                version_text = self.persistentState.version
-
-            self.screen.text(version_text, font_size=10, xy=(317, 238), align='bottomright', color=(129, 133, 135), font=Utils.get_font_resource('akkuratstd-light.ttf'))
+            if render_version is True:
+                if tingbot.app.settings['coffeeBot']['debug']:
+                    version_text = self.persistentState.version + ' - debug'
+                else:
+                    version_text = self.persistentState.version
+                self.screen.text(version_text, font_size=10, xy=(317, 238), align='bottomright', color=(129, 133, 135),
+                                 font=Utils.get_font_resource('akkuratstd-light.ttf'))
 
             for name, app in self.apps.iteritems():
                 if name != self.state.activeApp:
