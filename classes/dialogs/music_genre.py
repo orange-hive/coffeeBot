@@ -43,9 +43,7 @@ class MusicGenreDialog(DialogBase):
                 self.state.selectedGenres.remove(checkbox.value)
 
         xy = (10, 0)
-        print self.settings.availableGenres
         for genres in self.settings.availableGenres:
-            print genres
             self.create_widget(
                 'checkbox',
                 'button_' + genres,
