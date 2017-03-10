@@ -34,8 +34,8 @@ class MusicPlayer(AppBase):
         pygame.mixer.music.set_volume(0.3)
 
         self.read_music_folder(music_folder)
-        print self.settings.genres, self.state.active_genres
-            
+        random.shuffle(self.state.files)
+
         self.colors.button.active.background = (255, 222, 45)
         self.colors.button.active.font = (0, 0, 0)
 
@@ -205,8 +205,10 @@ class MusicPlayer(AppBase):
                 self.state.files = []
                 for genre in self.state.active_genres:
                     self.state.files.extend(self.settings.genres[genre])
+                random.shuffle(self.state.files)
 
-                self.skip(mute_talk=True)
+                if self.state.playingMusic is True:
+                    self.skip(mute_talk=True)
 
             self.state.needs_render = True
 
@@ -241,7 +243,7 @@ class MusicPlayer(AppBase):
                 artist = ' '.join(id3['artist'])
                 album = ' '.join(id3['album'])
                 title = ' '.join(id3['title'])
-                file_info = title + "\n" + artist + "\n" + album + "\n" + genres
+                file_info = title + "\n" + artist + "\nAlbum: " + album + "\nGenres: " + genres
 
                 id3Raw = ID3File(self.state.playingFile)
                 if 'APIC:' in id3Raw.keys():
@@ -250,4 +252,4 @@ class MusicPlayer(AppBase):
             except (RuntimeError, TypeError):
                 file_info = os.path.basename(self.state.playingFile)
 
-            self.screen.text(file_info, xy=(10, 140), max_width=300, align='left', color=self.colors.font, font_size=14, font=Utils.get_font_resource('akkuratstd-light.ttf'))
+            self.screen.text(file_info, xy=(10, 104), max_width=300, align='topleft', color=self.colors.font, font_size=14, font=Utils.get_font_resource('akkuratstd-light.ttf'))
