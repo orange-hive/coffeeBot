@@ -10,6 +10,7 @@ from mutagen.easyid3 import EasyID3
 from mutagen import File as ID3File
 from cStringIO import StringIO
 
+
 class MusicPlayer(AppBase):
     
     def __init__(self, parent, music_folder, timezone):
