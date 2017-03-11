@@ -61,10 +61,10 @@ class ControllerBase(object):
         if execution_type == 'fg':
             self.foreground()
             if self.needs_update() is True:
+                self.pre_render()
                 self.render()
                 if self.has_dialog() is True and self.dialog.state.needs_render is True:
                     self.dialog.render()
-                    self.dialog.post_render()
                 updated = True
         else:
             self.background()
@@ -73,6 +73,9 @@ class ControllerBase(object):
 
     def needs_update(self):
         return self.state.needs_render is True or (self.has_dialog() is True and self.dialog.state.needs_render is True)
+
+    def pre_render(self):
+        pass
 
     def create_widget(self, widget_type, name, callback=None, parent=None, **kwargs):
         if parent is None:
@@ -140,6 +143,13 @@ class ControllerBase(object):
             
         self.dialog = dialog
         self.state.needs_render = True
+        self.on_show()
+
+    def on_show(self):
+        pass
+
+    def on_hide(self):
+        pass
 
     def close_dialog(self):
         if self.dialog is not None:
@@ -147,6 +157,7 @@ class ControllerBase(object):
             
         self.dialog = None
         self.state.needs_render = True
+        self.on_hide()
 
     def has_dialog(self):
         return self.dialog is not None

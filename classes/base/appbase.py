@@ -28,3 +28,7 @@ class AppBase(ControllerBase):
         
     def close(self):
         self.parent.set_active_app(self.parent.settings.defaultApp)
+
+    def pre_render(self):
+        super(AppBase, self).pre_render()
+        self.screen.fill(self.colors.background)

@@ -11,6 +11,7 @@ from gtts import gTTS
 from hashlib import sha1
 from utils import Utils
 import tingbot
+from tingbot.graphics import Surface
 import random
 import datetime
 import json
@@ -19,7 +20,10 @@ import json
 class CoffeeBot(object):
     
     def __init__(self, screen, countdown_seconds, ticks_per_second, timezone, music_folder):
-        self.screen = screen
+        self.screen = Surface(pygame.Surface(screen.surface.get_size()))
+        self.screen.surface.convert()
+        self.screen.surface.set_alpha(255)
+        self.main_screen = screen
 
         self.appsInfos = DotMap({
             'lc4c': {
@@ -74,13 +78,19 @@ class CoffeeBot(object):
 
         self.settings = DotMap(
             defaultApp='appswitcher',
-            timezone=timezone
+            timezone=timezone,
+            ticks_per_second=ticks_per_second
         )
 
         self.state = DotMap(
             activeApp=self.settings.defaultApp,
             previousApp=None,
-            needs_render=True
+            needs_render=True,
+            tween_start_time=None,
+            tween_typ=None,
+            tween_value=None,
+            tween_to=None,
+            tween_step=None
         )
         
         self.persistentState = DotMap(
@@ -105,6 +115,8 @@ class CoffeeBot(object):
             background=(44, 51, 56),
             font=(255, 255, 255),
         )
+
+        self.main_screen.fill(self.colors.background)
 
         self.channels = DotMap(
             talk=pygame.mixer.Channel(2)
@@ -166,6 +178,7 @@ class CoffeeBot(object):
         
     def set_active_app(self, app_name):
         if self.apps[self.state.activeApp].keep_active() is False:
+            self.on_show()
             self.state.previousApp = self.state.activeApp
             self.state.activeApp = app_name
             self.apps[self.state.activeApp].state.needs_render = True
@@ -174,7 +187,58 @@ class CoffeeBot(object):
             self.save_persistent_state()
         else:
             self.say('Sorry. You cannot leave this application at the moment.')
-        
+
+    def on_show(self):
+        self.tween_start('easeInQuad', 225, 0, 100, -10)
+
+    def on_hide(self):
+        pass
+
+    def tween_start(self, typ, start, end, duration, step):
+        self.state.tween_typ = typ
+        self.state.tween_value = start
+        self.state.tween_to = end
+        self.state.tween_duration = float(duration * self.settings.ticks_per_second)
+        self.state.tween_step = step
+        self.state.tween_ticks = 0
+
+    def tween(self):
+        completed = True
+
+        if self.state.tween_value != self.state.tween_to:
+            completed = False
+
+            t = self.state.tween_ticks * 1000
+            c = self.state.tween_step
+            b = self.state.tween_value
+            d = self.state.tween_duration
+
+            if self.state.tween_typ == 'linear':
+                self.state.tween_value = int(c * t / d + b)
+
+            elif self.state.tween_typ == 'easeInQuad':
+                t /= d
+                self.state.tween_value = int(c * t * t + b)
+
+            elif self.state.tween_typ == 'easeOutQuad':
+                t /= d
+                self.state.tween_value = int(-c * t * (t - 2) + b)
+
+            if (
+                self.state.tween_step > 0
+                and
+                self.state.tween_value >= self.state.tween_to
+            ) or (
+                self.state.tween_step < 0
+                and
+                self.state.tween_value <= self.state.tween_to
+            ):
+                self.state.tween_value = self.state.tween_to
+
+            self.state.tween_ticks += 1
+
+        return completed
+
     def get_active_app(self):
         return self.state.activeApp
 
@@ -280,15 +344,24 @@ class CoffeeBot(object):
 
             updated = (updated or self.apps[self.state.activeApp].update('fg'))
 
-            if updated is True:
-                if tingbot.app.settings['coffeeBot']['debug']:
-                    version_text = self.persistentState.version + ' - debug'
+            tween_completed = self.tween()
+            if updated is True or tween_completed is False:
+                if self.state.tween_value is not None:
+                    y = self.state.tween_value
                 else:
-                    version_text = self.persistentState.version
-                self.screen.text(version_text, font_size=10, xy=(317, 238), align='bottomright', color=(129, 133, 135),
-                                 font=Utils.get_font_resource('akkuratstd-light.ttf'))
+                    y = 0
 
-                self.screen.update()
+                self.main_screen.surface.blit(self.screen.surface, (0, y))
+
+                if y < 230:
+                    if tingbot.app.settings['coffeeBot']['debug']:
+                        version_text = self.persistentState.version + ' - debug'
+                    else:
+                        version_text = self.persistentState.version
+                    self.main_screen.text(version_text, font_size=10, xy=(317, 238), align='bottomright',
+                                          color=(129, 133, 135), font=Utils.get_font_resource('akkuratstd-light.ttf'))
+
+                self.main_screen.update()
 
             for name, app in self.apps.iteritems():
                 if name != self.state.activeApp:
