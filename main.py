@@ -8,8 +8,9 @@ import subprocess
 from classes.utils import Utils
 import json
 
-screen.surface.convert()
-screen.fill((0, 0, 0, 0))
+screen.fill((0, 0, 0))
+screen.image('icon.png', xy=(160, 120), max_width=150, max_height=150, scale='fit', align="center")
+screen.update()
 
 settings = {
     'ticksPerSecond': 10,

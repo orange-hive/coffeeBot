@@ -272,25 +272,23 @@ class CoffeeBot(object):
 
     def update(self, execution_type='fg'):
         if execution_type == 'fg':
+            updated = False
+
             if self.state.needs_render is True:
                 self.render()
+                updated = True
 
-            render_version = self.apps[self.state.activeApp].state.needs_render is True or (
-                self.apps[self.state.activeApp].has_dialog() is True
-                and
-                self.apps[self.state.activeApp].dialog.state.needs_render is True
-            )
+            updated = (updated or self.apps[self.state.activeApp].update('fg'))
 
-            self.apps[self.state.activeApp].update('fg')
-            self.screen.update()
-
-            if render_version is True:
+            if updated is True:
                 if tingbot.app.settings['coffeeBot']['debug']:
                     version_text = self.persistentState.version + ' - debug'
                 else:
                     version_text = self.persistentState.version
                 self.screen.text(version_text, font_size=10, xy=(317, 238), align='bottomright', color=(129, 133, 135),
                                  font=Utils.get_font_resource('akkuratstd-light.ttf'))
+
+            self.screen.update()
 
             for name, app in self.apps.iteritems():
                 if name != self.state.activeApp:

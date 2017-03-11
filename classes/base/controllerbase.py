@@ -56,20 +56,23 @@ class ControllerBase(object):
 
         self.state.needs_render = False
 
-    def post_render(self):
-        pass
-        
     def update(self, execution_type='fg'):
+        updated = False
         if execution_type == 'fg':
             self.foreground()
-            if self.state.needs_render is True or (self.has_dialog() is True and self.dialog.state.needs_render is True):
+            if self.needs_update() is True:
                 self.render()
                 if self.has_dialog() is True and self.dialog.state.needs_render is True:
                     self.dialog.render()
                     self.dialog.post_render()
-                self.post_render()
+                updated = True
         else:
             self.background()
+
+        return updated
+
+    def needs_update(self):
+        return self.state.needs_render is True or (self.has_dialog() is True and self.dialog.state.needs_render is True)
 
     def create_widget(self, widget_type, name, callback=None, parent=None, **kwargs):
         if parent is None:
