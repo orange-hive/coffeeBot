@@ -288,7 +288,7 @@ class CoffeeBot(object):
                 self.screen.text(version_text, font_size=10, xy=(317, 238), align='bottomright', color=(129, 133, 135),
                                  font=Utils.get_font_resource('akkuratstd-light.ttf'))
 
-            self.screen.update()
+                self.screen.update()
 
             for name, app in self.apps.iteritems():
                 if name != self.state.activeApp:
