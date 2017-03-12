@@ -20,10 +20,15 @@ import json
 class CoffeeBot(object):
     
     def __init__(self, screen, countdown_seconds, ticks_per_second, timezone, music_folder):
-        self.screen = Surface(pygame.Surface(screen.surface.get_size()))
+        self.screen = Surface(pygame.Surface((320, 215)))
         self.screen.surface.convert()
         self.screen.surface.set_alpha(255)
-        self.main_screen = screen
+
+        self.main_screen = Surface(pygame.Surface(screen.surface.get_size()))
+        self.main_screen.surface.convert()
+        self.main_screen.surface.set_alpha(255)
+
+        self.display = screen
 
         self.appsInfos = DotMap({
             'lc4c': {
@@ -116,7 +121,7 @@ class CoffeeBot(object):
             font=(255, 255, 255),
         )
 
-        self.main_screen.fill(self.colors.background)
+        self.main_screen.fill((0, 0, 0, 0))
 
         self.channels = DotMap(
             talk=pygame.mixer.Channel(2)
@@ -178,9 +183,13 @@ class CoffeeBot(object):
         
     def set_active_app(self, app_name):
         if self.apps[self.state.activeApp].keep_active() is False:
-            self.on_show()
             self.state.previousApp = self.state.activeApp
             self.state.activeApp = app_name
+            if self.state.previousApp is not None and self.state.activeApp != self.state.previousApp:
+                if app_name == self.settings.defaultApp:
+                    self.on_hide()
+                else:
+                    self.on_show()
             self.apps[self.state.activeApp].state.needs_render = True
             if self.apps[self.state.activeApp].has_dialog():
                 self.apps[self.state.activeApp].dialog.state.needs_render = True
@@ -189,9 +198,10 @@ class CoffeeBot(object):
             self.say('Sorry. You cannot leave this application at the moment.')
 
     def on_show(self):
-        self.tween_start('easeInQuad', 225, 0, 100, -10)
+        self.tween_start('show', self.screen.height, 0, 100, -10)
 
     def on_hide(self):
+        self.tween_start('hide', 0, self.screen.height, 100, 10)
         pass
 
     def tween_start(self, typ, start, end, duration, step):
@@ -216,13 +226,13 @@ class CoffeeBot(object):
             if self.state.tween_typ == 'linear':
                 self.state.tween_value = int(c * t / d + b)
 
-            elif self.state.tween_typ == 'easeInQuad':
+            elif self.state.tween_typ == 'show':
                 t /= d
                 self.state.tween_value = int(c * t * t + b)
 
-            elif self.state.tween_typ == 'easeOutQuad':
+            elif self.state.tween_typ == 'hide':
                 t /= d
-                self.state.tween_value = int(-c * t * (t - 2) + b)
+                self.state.tween_value = int(c * t * t + b)
 
             if (
                 self.state.tween_step > 0
@@ -296,23 +306,21 @@ class CoffeeBot(object):
     def render(self):
         print 'render ' + str(time()) + ' - ' + self.__class__.__name__
         
-        self.screen.surface.set_clip(pygame.Rect(0, 0, 320, 25))
-        self.screen.fill(self.colors.background)
-        self.screen.surface.set_clip(None)
+        self.main_screen.fill(self.colors.background)
 
         if self.apps.music.is_playing() is True:
-            self.screen.text(u'\ue047', font_size=20, xy=(4, 2), align='topleft', color=self.colors.font, font=Utils.get_font_resource('icons.ttf'))
+            self.main_screen.text(u'\ue047', font_size=20, xy=(4, 2), align='topleft', color=self.colors.font, font=Utils.get_font_resource('icons.ttf'))
         else:
-            self.screen.text(u'\ue037', font_size=20, xy=(4, 2), align='topleft', color=self.colors.font, font=Utils.get_font_resource('icons.ttf'))
+            self.main_screen.text(u'\ue037', font_size=20, xy=(4, 2), align='topleft', color=self.colors.font, font=Utils.get_font_resource('icons.ttf'))
             
-        self.screen.text(u'\ue044', font_size=20, xy=(30, 2), align='topleft', color=self.colors.font, font=Utils.get_font_resource('icons.ttf'))
-#        self.screen.text('', font_size=20, xy=(290, 2), align='topright', color=self.colors.font, font=Utils.getFontResource('icons.ttf'))
-        self.screen.text(u'\ue5c3', font_size=20, xy=(313, 2), align='topright', color=self.colors.font, font=Utils.get_font_resource('icons.ttf'))
+        self.main_screen.text(u'\ue044', font_size=20, xy=(30, 2), align='topleft', color=self.colors.font, font=Utils.get_font_resource('icons.ttf'))
+#        self.main_screen.text('', font_size=20, xy=(290, 2), align='topright', color=self.colors.font, font=Utils.getFontResource('icons.ttf'))
+        self.main_screen.text(u'\ue5c3', font_size=20, xy=(313, 2), align='topright', color=self.colors.font, font=Utils.get_font_resource('icons.ttf'))
         
         if self.state.activeApp == 'appswitcher':
-            self.screen.text('What shall I do for you?', font_size=16, xy=(160, 3), align='top', color=self.colors.font, font=Utils.get_font_resource('akkuratstd-light.ttf'))
+            self.main_screen.text('What shall I do for you?', font_size=16, xy=(160, 3), align='top', color=self.colors.font, font=Utils.get_font_resource('akkuratstd-light.ttf'))
         else:
-            self.screen.text(self.appsInfos[self.state.activeApp].fullname, font_size=16, xy=(160, 3), align='top', color=self.colors.font, font=Utils.get_font_resource('akkuratstd-light.ttf'))
+            self.main_screen.text(self.appsInfos[self.state.activeApp].fullname, font_size=16, xy=(160, 3), align='top', color=self.colors.font, font=Utils.get_font_resource('akkuratstd-light.ttf'))
 
         self.state.needs_render = False
 
@@ -349,19 +357,31 @@ class CoffeeBot(object):
                 if self.state.tween_value is not None:
                     y = self.state.tween_value
                 else:
-                    y = 0
+                    y = self.screen.height
 
-                self.main_screen.surface.blit(self.screen.surface, (0, y))
+                self.display.surface.blit(self.main_screen.surface, (0, 0))
 
-                if y < 230:
-                    if tingbot.app.settings['coffeeBot']['debug']:
-                        version_text = self.persistentState.version + ' - debug'
-                    else:
-                        version_text = self.persistentState.version
-                    self.main_screen.text(version_text, font_size=10, xy=(317, 238), align='bottomright',
-                                          color=(129, 133, 135), font=Utils.get_font_resource('akkuratstd-light.ttf'))
+                if self.state.tween_typ == 'show':
+                    if self.state.previousApp is not None:
+                        self.display.surface.blit(self.apps[self.state.previousApp].screen.surface, (0, 25))
+                    self.display.surface.blit(self.apps[self.state.activeApp].screen.surface, (0, 25),
+                                              (0, y, self.screen.width, self.screen.height))
+                elif self.state.tween_typ == 'hide':
+                    self.display.surface.blit(self.apps[self.state.activeApp].screen.surface, (0, 25))
+                    if self.state.previousApp is not None:
+                        self.display.surface.blit(self.apps[self.state.previousApp].screen.surface, (0, 25),
+                                              (0, y, self.screen.width, self.screen.height))
+                else:
+                    self.display.surface.blit(self.apps[self.state.activeApp].screen.surface, (0, 25))
 
-                self.main_screen.update()
+                if tingbot.app.settings['coffeeBot']['debug']:
+                    version_text = self.persistentState.version + ' - debug'
+                else:
+                    version_text = self.persistentState.version
+                self.display.text(version_text, font_size=10, xy=(317, 238), align='bottomright',
+                                      color=(129, 133, 135), font=Utils.get_font_resource('akkuratstd-light.ttf'))
+
+                self.display.update()
 
             for name, app in self.apps.iteritems():
                 if name != self.state.activeApp:
