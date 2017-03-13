@@ -13,7 +13,7 @@ screen.image('icon.png', xy=(160, 120), max_width=150, max_height=150, scale='fi
 screen.update()
 
 settings = {
-    'ticksPerSecond': 15,
+    'ticksPerSecond': 20,
     'countdownSeconds': 300,
     'sleepAfterSeconds': 300,
     'timezone': pytz.timezone(tingbot.app.settings['coffeeBot']['timezone']),

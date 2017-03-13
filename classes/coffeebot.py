@@ -198,10 +198,10 @@ class CoffeeBot(object):
             self.say('Sorry. You cannot leave this application at the moment.')
 
     def on_show(self):
-        self.tween_start('show', self.screen.height, 0, 100, -10)
+        self.tween_start('show', 100, 0, 100, -1)
 
     def on_hide(self):
-        self.tween_start('hide', 0, self.screen.height, 100, 10)
+        self.tween_start('hide', 0, 100, 100, 1)
         pass
 
     def tween_start(self, typ, start, end, duration, step):
@@ -223,16 +223,13 @@ class CoffeeBot(object):
             b = self.state.tween_value
             d = self.state.tween_duration
 
-            if self.state.tween_typ == 'linear':
-                self.state.tween_value = int(c * t / d + b)
-
-            elif self.state.tween_typ == 'show':
+            if self.state.tween_typ == 'show':
                 t /= d
-                self.state.tween_value = int(c * t * t + b)
+                self.state.tween_value = c * t * t + b
 
             elif self.state.tween_typ == 'hide':
                 t /= d
-                self.state.tween_value = int(c * t * t + b)
+                self.state.tween_value = c * t * t + b
 
             if (
                 self.state.tween_step > 0
@@ -355,9 +352,11 @@ class CoffeeBot(object):
             tween_completed = self.tween()
             if updated is True or tween_completed is False:
                 if self.state.tween_value is not None:
-                    y = self.state.tween_value
+                    y = self.screen.height * (self.state.tween_value / 100)
                 else:
                     y = self.screen.height
+
+                print y
 
                 self.display.surface.blit(self.main_screen.surface, (0, 0))
 
@@ -378,7 +377,7 @@ class CoffeeBot(object):
                     version_text = self.persistentState.version + ' - debug'
                 else:
                     version_text = self.persistentState.version
-                self.display.text(version_text, font_size=10, xy=(317, 238), align='bottomright',
+                    self.display.text(version_text, font_size=10, xy=(317, 238), align='bottomright',
                                       color=(129, 133, 135), font=Utils.get_font_resource('akkuratstd-light.ttf'))
 
                 self.display.update()
