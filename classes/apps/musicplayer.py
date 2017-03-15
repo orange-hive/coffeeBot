@@ -47,22 +47,24 @@ class MusicPlayer(AppBase):
                 if os.path.isdir(os.path.join(folder, filename)):
                     self.read_music_folder(os.path.join(folder, filename))
                 else:
-                    id3 = EasyID3(os.path.join(folder, filename))
-                    genres = []
-                    if 'genre' in id3.keys():
-                        for genre_raw in id3['genre']:
-                            for genre in genre_raw.split(';'):
-                                genres.append(genre.strip())
+                    extension = os.path.splitext(filename)[1]
+                    if extension.lower() == '.mp3':
+                        id3 = EasyID3(os.path.join(folder, filename))
+                        genres = []
+                        if 'genre' in id3.keys():
+                            for genre_raw in id3['genre']:
+                                for genre in genre_raw.split(';'):
+                                    genres.append(genre.strip())
 
-                    if len(genres) == 0:
-                        genres.append('unknown')
+                        if len(genres) == 0:
+                            genres.append('unknown')
 
-                    for genre in genres:
-                        if genre not in self.settings.genres:
-                            self.settings.genres[genre] = []
-                            self.state.active_genres.append(genre)
-                        self.settings.genres[genre].append(os.path.join(folder, filename))
-                        self.state.files.append(os.path.join(folder, filename))
+                        for genre in genres:
+                            if genre not in self.settings.genres:
+                                self.settings.genres[genre] = []
+                                self.state.active_genres.append(genre)
+                            self.settings.genres[genre].append(os.path.join(folder, filename))
+                            self.state.files.append(os.path.join(folder, filename))
 
     def is_playing(self):
         return self.state.playingMusic
@@ -245,11 +247,15 @@ class MusicPlayer(AppBase):
                 artist = ' '.join(id3['artist'])
                 album = ' '.join(id3['album'])
                 title = ' '.join(id3['title'])
-                file_info = title + "\n" + artist + "\nAlbum: " + album + "\nGenres: " + genres
 
-                id3Raw = ID3File(self.state.playingFile)
-                if 'APIC:' in id3Raw.keys():
-                    artwork = StringIO(id3Raw.tags['APIC:'].data)
+                file_info = title
+                file_info += "\n" + artist
+                file_info += "\nAlbum: " + album
+                file_info += "\nGenre(s): " + genres
+
+                id3_raw = ID3File(self.state.playingFile)
+                if 'APIC:' in id3_raw.keys():
+                    artwork = StringIO(id3_raw.tags['APIC:'].data)
                     self.screen.image(pygame.image.load(artwork), xy=(310, 180), align='bottomright', max_height=75, max_width=75)
             except (RuntimeError, TypeError):
                 file_info = os.path.basename(self.state.playingFile)

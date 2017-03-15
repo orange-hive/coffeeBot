@@ -126,7 +126,7 @@ class CoffeeBot(object):
         self.channels = DotMap(
             talk=pygame.mixer.Channel(2)
         )
-        self.channels.talk.set_volume(0.3)
+        self.channels.talk.set_volume(0.1)
         
         self.say('Hi, I am the coffee bot! What shall I do for you?')
 
