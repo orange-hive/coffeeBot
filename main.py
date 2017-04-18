@@ -11,7 +11,7 @@ import json
 screen.fill((0, 0, 0))
 screen.image('icon.png', xy=(160, 120), max_width=150, max_height=150, scale='fit', align="center")
 screen.text(
-    'LOADING...',
+    'loading...',
     xy=(160, 210),
     align='center',
     color=(255, 255, 255),
