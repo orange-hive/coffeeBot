@@ -87,6 +87,7 @@ class MusicPlayer(AppBase):
             except RuntimeError:
                 self.parent.say('Sorry, I could not load the song. Please try again!')
                 self.stop(mute_talk=True)
+                self.parent.state.needs_render = True
 
             self.state.loadingFile = False
             self.state.loadingStartedAt = None
@@ -185,7 +186,13 @@ class MusicPlayer(AppBase):
     def check_music_playing(self):
         if self.state.loadingFile is False and self.is_playing() is True and pygame.mixer.music.get_pos() == -1:
             self.play(mute_talk=True)
-        
+
+        if self.state.loadingFile is True and self.state.loadingStartedAt is not None:
+            if (self.state.loadingStartedAt + datetime.timedelta(seconds=5)) < datetime.datetime.now(self.settings['timezone']):
+                self.parent.say('This song is not loading. I will play another song.')
+                self.skip(mute_talk=True)
+                self.parent.state.needs_render = True
+
     def foreground(self):
         super(MusicPlayer, self).foreground()
         self.check_music_playing()
@@ -227,8 +234,7 @@ class MusicPlayer(AppBase):
 
         if self.state.loadingFile is True and self.state.loadingStartedAt is not None:
             if (self.state.loadingStartedAt + datetime.timedelta(seconds=5)) < datetime.datetime.now(self.settings['timezone']):
-                self.parent.say('This song is not loading. I will play another song.')
-                self.skip(mute_talk=True)
+                pass
             else:
                 self.screen.image('loader.gif', xy=(160, 75), align='center')
                 self.state.needs_render = True

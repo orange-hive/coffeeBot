@@ -10,6 +10,13 @@ import json
 
 screen.fill((0, 0, 0))
 screen.image('icon.png', xy=(160, 120), max_width=150, max_height=150, scale='fit', align="center")
+screen.text(
+    'LOADING...',
+    xy=(160, 210),
+    align='center',
+    color=(255, 255, 255),
+    font_size=16, font=Utils.get_font_resource('akkuratstd-bold.ttf')
+)
 screen.update()
 
 settings = {

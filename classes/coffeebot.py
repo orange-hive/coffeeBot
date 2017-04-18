@@ -356,8 +356,6 @@ class CoffeeBot(object):
                 else:
                     y = self.screen.height
 
-                print y
-
                 self.display.surface.blit(self.main_screen.surface, (0, 0))
 
                 if self.state.tween_typ == 'show':
@@ -377,8 +375,9 @@ class CoffeeBot(object):
                     version_text = self.persistentState.version + ' - debug'
                 else:
                     version_text = self.persistentState.version
-                    self.display.text(version_text, font_size=10, xy=(317, 238), align='bottomright',
-                                      color=(129, 133, 135), font=Utils.get_font_resource('akkuratstd-light.ttf'))
+
+                self.display.text(version_text, font_size=10, xy=(317, 238), align='bottomright',
+                                  color=(129, 133, 135), font=Utils.get_font_resource('akkuratstd-light.ttf'))
 
                 self.display.update()
 

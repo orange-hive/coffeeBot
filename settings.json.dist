@@ -65,14 +65,20 @@
     ]
   },
   "kitchenteam": {
-    "sun": [],
-    "mon": [
-      [ "{name}", "{email}" ]
-    ],
-    "tue": [],
-    "wed": [],
-    "thu": [],
-    "fri": [],
-    "sat": []
+    "teams": {
+      "sun": [],
+      "mon": [
+        [ "{name}", "{email}" ]
+      ],
+      "tue": [],
+      "wed": [],
+      "thu": [],
+      "fri": [],
+      "sat": []
+    },
+    "towels_cleaning": {
+      "start_date": "{date has to be a sunday, format YYYY-MM-DD}",
+      "reminder_email_day": "{abbreviation of weekday}"
+    }
   }
 }
