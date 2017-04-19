@@ -4,7 +4,6 @@ import datetime
 import tingbot
 import math
 import calendar
-from dateutil import parser as date_parser
 
 
 
@@ -26,7 +25,7 @@ class Kitchenteam(AppBase):
         return (
             (
                 self.persistentState.lastMailSent is None
-                or not(date_parser.parse(self.persistentState.lastMailSent, '%Y-%m-%dT%H:%M:%S').strftime('%Y-%m-%d') == datetime.datetime.now(self.settings.timezone).strftime('%Y-%m-%d'))
+                or not(datetime.datetime.strptime(self.persistentState.lastMailSent, '%Y-%m-%dT%H:%M:%S').strftime('%Y-%m-%d') == datetime.datetime.now(self.settings.timezone).strftime('%Y-%m-%d'))
             ) and (
                 Utils.time_in_range(
                     datetime.time(8, 0, 0),
@@ -42,7 +41,7 @@ class Kitchenteam(AppBase):
         return (
             (
                 self.persistentState.lastTowelMailSent is None
-                or not(date_parser.parse(self.persistentState.lastTowelMailSent, '%Y-%m-%dT%H:%M:%S').strftime('%Y-%m-%d') == datetime.datetime.now(self.settings.timezone).strftime('%Y-%m-%d'))
+                or not(datetime.datetime.strptime(self.persistentState.lastTowelMailSent, '%Y-%m-%dT%H:%M:%S').strftime('%Y-%m-%d') == datetime.datetime.now(self.settings.timezone).strftime('%Y-%m-%d'))
             ) and (
                 now.strftime('%a').lower() == tingbot.app.settings['kitchenteam']['towels_cleaning']['reminder_email_day']
                 and
@@ -74,7 +73,7 @@ class Kitchenteam(AppBase):
             Utils.sendmail(receiver[1], receiver[0], 'You\'re part of the team!', msg, expires_minutes=720)
 
     def sendmail_towel_cleaning_team(self):
-        start_date = date_parser.parse(tingbot.app.settings['kitchenteam']['towels_cleaning']['start_date'], '%Y-%m-%d').replace(tzinfo=self.settings.timezone)
+        start_date = datetime.datetime.strptime(tingbot.app.settings['kitchenteam']['towels_cleaning']['start_date'], '%Y-%m-%d').replace(tzinfo=self.settings.timezone)
         days = (datetime.datetime.now(self.settings.timezone) - start_date).days
         weeks = math.floor(days / 7)
         team_count = len(tingbot.app.settings['kitchenteam']['teams'])

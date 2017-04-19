@@ -5,7 +5,6 @@ from dotmap import DotMap
 from ..utils import Utils
 from ..base import AppBase
 import tingbot
-from dateutil import parser as date_parser
 
 
 
@@ -54,7 +53,7 @@ class LastCallForCoffee(AppBase):
         return (
             (
                 self.persistentState.lastActivated is None
-                or not(date_parser.parse(self.persistentState.lastActivated, '%Y-%m-%dT%H:%M:%S').strftime('%Y-%m-%d') == datetime.datetime.now(self.settings.timezone).strftime('%Y-%m-%d'))
+                or not(datetime.datetime.strptime(self.persistentState.lastActivated, '%Y-%m-%dT%H:%M:%S').strftime('%Y-%m-%d') == datetime.datetime.now(self.settings.timezone).strftime('%Y-%m-%d'))
             ) and (
                 Utils.time_in_range(
                     datetime.time(16, 45, 0),
@@ -192,8 +191,8 @@ class LastCallForCoffee(AppBase):
                 self.get_widget('inactive_lc4c').render()
                 if (
                     self.persistentState.lastActivated is None
-                    or not(date_parser.parse(self.persistentState.lastActivated, '%Y-%m-%dT%H:%M:%S').strftime('%Y-%m-%d') == datetime.datetime.now(self.settings.timezone).strftime('%Y-%m-%d'))
+                    or not(datetime.datetime.strptime(self.persistentState.lastActivated, '%Y-%m-%dT%H:%M:%S').strftime('%Y-%m-%d') == datetime.datetime.now(self.settings.timezone).strftime('%Y-%m-%d'))
                 ):
                     self.screen.text("You're out of the \"lc4c time\".\nThe system activates at 16:45.\nMay I play some gentle music instead?", font_size=14, xy=(160, 155), color=self.colors.button.active.font, font=Utils.get_font_resource('akkuratstd-light.ttf'))
                 else:
-                    self.screen.text("The system has already been\nactivated at " + date_parser.parse(self.persistentState.lastActivated, '%Y-%m-%dT%H:%M:%S').strftime('%H:%M') + ".\nMay I play some gentle music instead?", font_size=14, xy=(160, 155), color=self.colors.button.active.font, font=Utils.get_font_resource('akkuratstd-light.ttf'))
+                    self.screen.text("The system has already been\nactivated at " + datetime.datetime.strptime(self.persistentState.lastActivated, '%Y-%m-%dT%H:%M:%S').strftime('%H:%M') + ".\nMay I play some gentle music instead?", font_size=14, xy=(160, 155), color=self.colors.button.active.font, font=Utils.get_font_resource('akkuratstd-light.ttf'))

@@ -15,7 +15,6 @@ from tingbot.graphics import Surface
 import random
 import datetime
 import json
-from dateutil import parser as date_parser
 
 
 class CoffeeBot(object):
