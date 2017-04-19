@@ -15,6 +15,7 @@ from tingbot.graphics import Surface
 import random
 import datetime
 import json
+from dateutil import parser as date_parser
 
 
 class CoffeeBot(object):
@@ -270,32 +271,34 @@ class CoffeeBot(object):
         self.apps[self.state.activeApp].on_touch(xy, action)
 
     def on_webhook(self, payload):
-        if tingbot.app.settings['coffeeBot']['webhook_active'] is True and 'key' in payload.keys():
-            if payload['key'] == tingbot.app.settings['coffeeBot']['webhook_key']:
-                if 'action' in payload.keys():
-                    if payload['action'] == 'say':
-                        if 'text' in payload.keys():
-                            self.say(payload['text'])
-                    elif payload['action'] == 'screenshot':
-                        screenshot_file = Utils.get_screenshot_resource()
-                        pygame.image.save(self.screen.surface, screenshot_file)
-                        Utils.sendmail(
-                            tingbot.app.settings['coffeeBot']['screenshot_receiver'][1],
-                            tingbot.app.settings['coffeeBot']['screenshot_receiver'][0],
-                            'Screenshot',
-                            "Here is your Screenshot\n\n",
-                            (screenshot_file,)
-                        )
-                    elif 'action' in payload.keys():
-                        if payload['action'] == 'quit':
-                            quit()
+        if payload['action'] == 'say':
+            if 'text' in payload.keys():
+                self.say(payload['text'])
+        elif payload['action'] == 'screenshot':
+            screenshot_file = Utils.get_screenshot_resource()
+            pygame.image.save(self.screen.surface, screenshot_file)
+            Utils.sendmail(
+                tingbot.app.settings['coffeeBot']['screenshot_receiver'][1],
+                tingbot.app.settings['coffeeBot']['screenshot_receiver'][0],
+                'Screenshot',
+                "Here is your Screenshot\n\n",
+                (screenshot_file,)
+            )
+        elif payload['action'] == 'quit':
+                quit()
 
-                    elif 'app' in payload.keys() and payload['app'] in self.apps.toDict().keys():
-                        if payload['action'] == 'open':
-                            self.set_active_app(payload['app'])
-                        elif payload['app'] == 'music':
-                            if payload['action'] == 'play':
-                                self.apps['music'].play()
+        elif payload['action'] == 'open':
+            if 'app' in payload.keys() and payload['app'] in self.apps.toDict().keys():
+                self.set_active_app(payload['app'])
+
+        elif payload['action'] == 'play':
+            self.apps['music'].play()
+
+        elif payload['action'] == 'stop':
+            self.apps['music'].stop()
+
+        elif payload['action'] == 'skip':
+            self.apps['music'].skip()
 
     def keep_active(self):
         return self.apps[self.state.activeApp].keep_active()

@@ -7,6 +7,7 @@ from random import randint
 import subprocess
 from classes.utils import Utils
 import json
+from dateutil import parser as date_parser
 
 screen.fill((0, 0, 0))
 screen.image('icon.png', xy=(160, 120), max_width=150, max_height=150, scale='fit', align="center")
@@ -92,7 +93,6 @@ def on_touch(xy, action):
         coffeeBot.on_touch(xy, action)
 
 
-@webhook('coffeeBot')
 def on_webhook(data):
     global startup
 
@@ -101,9 +101,26 @@ def on_webhook(data):
     else:
         try:
             payload = json.loads(data)
-            coffeeBot.on_webhook(payload)
+            print 'new webook payload:', payload
+            if (
+                'send' in payload.keys()
+                and 'action' in payload.keys()
+            ):
+                send = date_parser.parse(payload['send'])
+
+                if (
+                    send.tzinfo is not None and send.tzinfo.utcoffset(send) is not None
+                    and datetime.datetime.now(settings['timezone']) < (send + datetime.timedelta(minutes=15))
+                ):
+                    coffeeBot.on_webhook(payload)
         except ValueError:
             pass
+
+# register dynamic webhook
+if tingbot.app.settings['coffeeBot']['webhook_active'] is True:
+    webhook = 'coffeeBot-' + tingbot.app.settings['coffeeBot']['webhook_key'].encode('ascii', 'replace')
+    tingbot.webhook(webhook)(on_webhook)
+    print 'added webhook: ' + webhook
 
 
 @every(seconds=1.0/5)
