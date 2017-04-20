@@ -8,8 +8,7 @@ from email.header import Header
 import threading
 import tingbot
 import datetime
-import pytz
-
+from dateutil.tz import gettz
 
 class Utils(object):
 
@@ -47,7 +46,7 @@ class Utils(object):
         """
         Returns the path to a resource bundled in this app (at fonts/<name>)
         """
-        timezone = pytz.timezone(tingbot.app.settings['coffeeBot']['timezone'])
+        timezone = gettz(tingbot.app.settings['coffeeBot']['timezone'])
 
         return os.path.realpath(
             os.path.normpath(
@@ -105,7 +104,7 @@ class Utils(object):
             msg['To'] = "\"%s\" <%s>" % (Header(to_name, 'utf-8'), to_email)
 
             if expires_minutes is not None:
-                timezone = pytz.timezone(tingbot.app.settings['coffeeBot']['timezone'])
+                timezone = gettz(tingbot.app.settings['coffeeBot']['timezone'])
                 expire_date = datetime.datetime.now(timezone) + datetime.timedelta(minutes=expires_minutes)
                 msg['Expires'] = msg['Expiry-Date'] = expire_date.strftime('%a, %d %b %Y %H:%M:%S %z')
 
