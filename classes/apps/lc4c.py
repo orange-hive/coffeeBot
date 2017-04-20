@@ -81,22 +81,23 @@ class LastCallForCoffee(AppBase):
     def play_countdown_end_sound(self):
         self.channels.system.play(self.sounds.countdownEnd)
 
-    def create_widgets(self):
-            def action():
-                if self.is_armed() is True:
-                    self.parent.say('OK. I will make a last call for coffee!')
-                    self.get_widget('lc4c').enabled = False
-                    self.state.countdownTicks = self.settings.countdownSeconds * self.settings.ticks
-                    self.sendmail()
-                    self.persistentState.lastActivated = datetime.datetime.now(self.settings.timezone).strftime('%Y-%m-%dT%H:%M:%S')
-                    self.parent.save_persistent_state()
-                    self.state.countdownActive = True
-                    self.state.needs_render = True
+    def start(self):
+        if self.state.countdownActive is False and self.is_armed() is True:
+            self.parent.say('OK. I will make a last call for coffee!')
+            self.get_widget('lc4c').enabled = False
+            self.state.countdownTicks = self.settings.countdownSeconds * self.settings.ticks
+            self.sendmail()
+            self.persistentState.lastActivated = datetime.datetime.now(self.settings.timezone).strftime(
+                '%Y-%m-%dT%H:%M:%S')
+            self.parent.save_persistent_state()
+            self.state.countdownActive = True
+            self.state.needs_render = True
 
+    def create_widgets(self):
             self.create_widget(
                 'button',
                 'lc4c',
-                action,
+                self.start,
                 xy=(160, 75),
                 size=(300, 70),
                 color=self.colors.button.active.font,

@@ -181,11 +181,11 @@ class CoffeeBot(object):
             if 'coffeeBot' in global_state.keys():
                 self.persistentState = DotMap(global_state['coffeeBot'])
         
-    def set_active_app(self, app_name):
+    def set_active_app(self, app_name, no_animation=False):
         if self.apps[self.state.activeApp].keep_active() is False:
             self.state.previousApp = self.state.activeApp
             self.state.activeApp = app_name
-            if self.state.previousApp is not None and self.state.activeApp != self.state.previousApp:
+            if no_animation == False and self.state.previousApp is not None and self.state.activeApp != self.state.previousApp:
                 if app_name == self.settings.defaultApp:
                     self.on_hide()
                 else:
@@ -298,6 +298,29 @@ class CoffeeBot(object):
 
         elif payload['action'] == 'skip':
             self.apps['music'].skip()
+
+        elif payload['action'] == 'lc4c':
+            self.set_active_app('lc4c')
+            if self.state.activeApp == 'lc4c':
+                self.apps['lc4c'].start()
+
+        elif payload['action'] == 'dishes':
+            self.set_active_app('dishes')
+            if self.state.activeApp == 'dishes':
+                self.apps['dishes'].start()
+
+        elif payload['action'] == 'timer':
+            if (
+                'duration' in payload.keys() and payload['duration'] != ''
+                and 'notifications' in payload.keys() and isinstance(payload['notifications'], list)
+                and len(payload['notifications']) > 0
+            ):
+                self.set_active_app('timer')
+                if self.state.activeApp == 'timer':
+                    notifications = {}
+                    for r in payload['notifications']:
+                        notifications[r[0]] = r[1]
+                    self.apps['timer'].start(duration=payload['duration'], notifications=notifications)
 
     def keep_active(self):
         return self.apps[self.state.activeApp].keep_active()

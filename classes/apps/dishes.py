@@ -59,11 +59,12 @@ class Dishes(AppBase):
         self.channels.system.play(self.sounds.countdownEnd)
 
     def start(self):
-        self.parent.say('OK. I will call out for dishes!')
-        self.state.countdownTicks = self.settings.countdownSeconds * self.settings.ticks
-        self.sendmail()
-        self.state.countdownActive = True
-        self.state.needs_render = True
+        if self.state.countdownActive is False:
+            self.parent.say('OK. I will call out for dishes!')
+            self.state.countdownTicks = self.settings.countdownSeconds * self.settings.ticks
+            self.sendmail()
+            self.state.countdownActive = True
+            self.state.needs_render = True
 
     def create_widgets(self):
             def action():

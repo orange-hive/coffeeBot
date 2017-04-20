@@ -2,12 +2,12 @@ from classes import *
 import tingbot
 from tingbot import *
 import datetime
-import pytz
 from random import randint
 import subprocess
 from classes.utils import Utils
 import json
 from dateutil import parser as date_parser
+from dateutil.tz import gettz
 
 screen.fill((0, 0, 0))
 screen.image('icon.png', xy=(160, 120), max_width=150, max_height=150, scale='fit', align="center")
@@ -24,7 +24,7 @@ settings = {
     'ticksPerSecond': 20,
     'countdownSeconds': 300,
     'sleepAfterSeconds': 300,
-    'timezone': pytz.timezone(tingbot.app.settings['coffeeBot']['timezone']),
+    'timezone': gettz(tingbot.app.settings['coffeeBot']['timezone']),
     'musicFolder': tingbot.app.settings['coffeeBot']['musicFolder']
 }
 startup = True
@@ -137,7 +137,7 @@ def activitycheck():
         activeScreen = True
         screen.brightness = 100
         if oldActiveScreen is False:
-            coffeeBot.set_active_app('appswitcher')
+            coffeeBot.set_active_app(coffeeBot.settings.defaultApp, no_animation=True)
     else:
         activeScreen = False
         screen.brightness = 50

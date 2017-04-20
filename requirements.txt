@@ -1,5 +1,4 @@
 dotmap>=1.2
-pytz>=2013b
 gTTS
 mutagen
 python-dateutil

@@ -5,6 +5,7 @@ from ..base import AppBase
 from ..dialogs import NotificationDialog
 from ..utils import Utils
 import tingbot
+from dateutil import parser as date_parser
 
 
 class Timer(AppBase):
@@ -89,14 +90,32 @@ class Timer(AppBase):
             
         self.state.needs_render = True
          
-    def start(self):
-        if self.state.countdown > 0 and (self.get_widget('notification').checked is False or len(self.notifications) > 0):
-            if len(self.notifications) > 0:
-                self.parent.say('OK. I will notify you by email.')
-            self.state.started = True
-            self.state.countdownTicks = self.state.countdown * self.settings.ticksPerSecond
-        
-        self.state.needs_render = True
+    def start(self, duration=None, notifications=None):
+        if self.state.started is False:
+            if duration is not None:
+                try:
+                    duration_datetime = date_parser.parse('00:'+duration)
+                    self.state.countdown = duration_datetime.minute * 60 + duration_datetime.second
+                    if self.state.countdown > 3595:
+                        self.state.countdown = 3595
+                except ValueError:
+                    self.state.countdown = 0
+
+            if notifications is not None:
+                self.notifications = notifications
+                checkbox = self.get_widget('notification')
+                notify_notice = []
+                for key, receiver in self.notifications.iteritems():
+                    notify_notice.append(key)
+                checkbox.notice = ', '.join(notify_notice)
+
+            if self.state.countdown > 0 and (self.get_widget('notification').checked is False or len(self.notifications) > 0):
+                if len(self.notifications) > 0:
+                    self.parent.say('OK. I will notify you by email.')
+                self.state.started = True
+                self.state.countdownTicks = self.state.countdown * self.settings.ticksPerSecond
+
+            self.state.needs_render = True
         
     def stop(self):
         self.state.started = False
